@@ -17,6 +17,7 @@ export type Query = {
   __typename?: 'Query';
   hello: Scalars['String'];
   me?: Maybe<User>;
+  getBoards: Array<Board>;
 };
 
 export type User = {
@@ -26,10 +27,21 @@ export type User = {
   updatedAt: Scalars['String'];
 };
 
+export type Board = {
+  __typename?: 'Board';
+  id: Scalars['Int'];
+  name: Scalars['String'];
+  creatorId: Scalars['Float'];
+  creator: User;
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   login: UserResponse;
   register: UserResponse;
+  createBoard: Board;
 };
 
 
@@ -41,6 +53,11 @@ export type MutationLoginArgs = {
 export type MutationRegisterArgs = {
   password: Scalars['String'];
   email: Scalars['String'];
+};
+
+
+export type MutationCreateBoardArgs = {
+  boardName: Scalars['String'];
 };
 
 export type UserResponse = {
@@ -77,6 +94,17 @@ export type LoginMutation = (
       & Pick<FieldError, 'field' | 'message'>
     )>> }
   ) }
+);
+
+export type GetBoardsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetBoardsQuery = (
+  { __typename?: 'Query' }
+  & { getBoards: Array<(
+    { __typename?: 'Board' }
+    & Pick<Board, 'id' | 'name' | 'creatorId' | 'createdAt' | 'updatedAt'>
+  )> }
 );
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
@@ -131,6 +159,42 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const GetBoardsDocument = gql`
+    query GetBoards {
+  getBoards {
+    id
+    name
+    creatorId
+    createdAt
+    updatedAt
+  }
+}
+    `;
+
+/**
+ * __useGetBoardsQuery__
+ *
+ * To run a query within a React component, call `useGetBoardsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetBoardsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetBoardsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetBoardsQuery(baseOptions?: Apollo.QueryHookOptions<GetBoardsQuery, GetBoardsQueryVariables>) {
+        return Apollo.useQuery<GetBoardsQuery, GetBoardsQueryVariables>(GetBoardsDocument, baseOptions);
+      }
+export function useGetBoardsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetBoardsQuery, GetBoardsQueryVariables>) {
+          return Apollo.useLazyQuery<GetBoardsQuery, GetBoardsQueryVariables>(GetBoardsDocument, baseOptions);
+        }
+export type GetBoardsQueryHookResult = ReturnType<typeof useGetBoardsQuery>;
+export type GetBoardsLazyQueryHookResult = ReturnType<typeof useGetBoardsLazyQuery>;
+export type GetBoardsQueryResult = Apollo.QueryResult<GetBoardsQuery, GetBoardsQueryVariables>;
 export const MeDocument = gql`
     query Me {
   me {

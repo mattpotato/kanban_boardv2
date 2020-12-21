@@ -22,7 +22,6 @@ export class User extends BaseEntity {
   @Column()
   password!: string;
 
-  @Column()
   @OneToMany(() => Board, (board) => board.creator)
   boards: Board[];
 

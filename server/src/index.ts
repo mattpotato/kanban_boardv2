@@ -7,6 +7,10 @@ import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
 import { TestResolver } from "./resolvers/TestResolver";
 import { UserResolver } from "./resolvers/UserResolver";
+import connectRedis from "connect-redis";
+import session from "express-session";
+import Redis from "ioredis";
+import { COOKIE_NAME, __prod__ } from "./constants";
 
 const main = async () => {
   const conn = await createConnection({
@@ -21,6 +25,29 @@ const main = async () => {
   await conn.runMigrations();
   const app = express();
 
+  const RedisStore = connectRedis(session);
+  const redis = new Redis(process.env.REDIS_URL);
+
+  app.set("trust proxy", 1);
+  app.use(
+    session({
+      name: COOKIE_NAME,
+      store: new RedisStore({
+        client: redis,
+        disableTouch: true,
+      }),
+      cookie: {
+        maxAge: 1000 * 60 * 60 * 24 * 365 * 10, // 10 years
+        httpOnly: true,
+        sameSite: "lax", // csrf
+        secure: __prod__, // cookies only work in https
+        domain: __prod__ ? ".matthewop.com" : undefined,
+      },
+      saveUninitialized: false,
+      secret: process.env.SESSION_SECRET,
+      resave: false,
+    })
+  );
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
       resolvers: [UserResolver, TestResolver],
@@ -28,6 +55,7 @@ const main = async () => {
     context: ({ req, res }) => ({
       req,
       res,
+      redis,
     }),
   });
 

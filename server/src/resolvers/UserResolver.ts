@@ -4,6 +4,7 @@ import {
   Arg,
   Ctx,
   Field,
+  InputType,
   Mutation,
   ObjectType,
   Query,
@@ -29,6 +30,15 @@ class UserResponse {
   user?: User;
 }
 
+@InputType()
+export class LoginInput {
+  @Field() //
+  email: string;
+
+  @Field()
+  password: string;
+}
+
 @Resolver()
 export class UserResolver {
   @Query(() => User, { nullable: true })
@@ -42,10 +52,10 @@ export class UserResolver {
 
   @Mutation(() => UserResponse)
   async login(
-    @Arg("email", () => String) email: string,
-    @Arg("password", () => String) password: string,
+    @Arg("options", () => LoginInput) options: LoginInput,
     @Ctx() { req }: MyContext
   ): Promise<UserResponse> {
+    const { email, password } = options;
     const user = await User.findOne({ email });
 
     if (!user) {

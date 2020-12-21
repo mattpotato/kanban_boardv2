@@ -59,7 +59,13 @@ const main = async () => {
     }),
   });
 
-  apolloServer.applyMiddleware({ app });
+  apolloServer.applyMiddleware({
+    app,
+    cors: {
+      origin: "http://localhost:3000",
+      credentials: true,
+    },
+  });
 
   app.listen(process.env.PORT, () => {
     console.log(`server started, listening at port ${process.env.PORT}`);

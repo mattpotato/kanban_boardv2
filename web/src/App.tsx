@@ -4,11 +4,13 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Home from "./pages/home";
 import Login from "./pages/login";
 import Dashboard from "./pages/dashboard";
+import Board from "./pages/board";
 
 export const App = () => (
   <ChakraProvider theme={theme}>
     <Router>
       <Switch>
+        <Route path="/board/:boardId" component={Board} />
         <Route path="/login">
           <Login />
         </Route>

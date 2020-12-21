@@ -1,14 +1,14 @@
-import { Board } from "src/entities/Board";
-import { MyContext } from "src/types";
-import { Arg, Ctx, Query, Resolver } from "type-graphql";
+import { MyContext } from "./../types";
+import { Board } from "../entities/Board";
+import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
 
 @Resolver()
 export class BoardResolver {
-  @Query(() => Board)
+  @Mutation(() => Board)
   async createBoard(
     @Ctx() { req }: MyContext,
-    @Arg("boardName") boardName: string
-  ): Promise<Board | undefined> {
+    @Arg("boardName", () => String) boardName: string
+  ): Promise<Board> {
     return Board.create({
       name: boardName,
       creatorId: req.session.userId,

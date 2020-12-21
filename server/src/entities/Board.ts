@@ -28,11 +28,11 @@ export class Board extends BaseEntity {
   @ManyToOne(() => User, (user) => user.boards)
   creator: User;
 
-  @Field(() => String)
+  @Field(() => Date)
   @CreateDateColumn()
   createdAt: Date;
 
-  @Field(() => String)
+  @Field(() => Date)
   @CreateDateColumn()
   updatedAt: Date;
 }

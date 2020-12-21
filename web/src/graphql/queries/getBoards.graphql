@@ -1,0 +1,9 @@
+query GetBoards {
+  getBoards {
+    id
+    name
+    creatorId
+    createdAt
+    updatedAt
+  }
+}

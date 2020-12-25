@@ -5,8 +5,10 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
+import { TaskList } from "./TaskList";
 import { User } from "./User";
 
 @ObjectType()
@@ -27,6 +29,18 @@ export class Board extends BaseEntity {
   @Field(() => User)
   @ManyToOne(() => User, (user) => user.boards)
   creator: User;
+
+  @Field(() => TaskList)
+  @OneToMany(() => TaskList, (taskList) => taskList.board)
+  taskLists: User;
+
+  @Field()
+  @Column({ type: "double precision", default: 65535.5 })
+  minPos: number;
+
+  @Field()
+  @Column({ type: "double precision", default: 65535.5 })
+  maxPos: number;
 
   @Field(() => Date)
   @CreateDateColumn()

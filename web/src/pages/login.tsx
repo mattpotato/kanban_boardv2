@@ -14,12 +14,11 @@ import { ColorModeSwitcher } from "../components/ColorModeSwitcher";
 import { LoginInput, useLoginMutation } from "../generated/graphql";
 
 const Login = () => {
-  const { handleSubmit, reset, register } = useForm();
+  const { handleSubmit, register } = useForm();
   const [login, { data: loginData }] = useLoginMutation();
   const history = useHistory();
 
   const onSubmit = (data: LoginInput) => {
-    console.log(data);
     login({
       variables: {
         options: data,
@@ -28,8 +27,8 @@ const Login = () => {
   };
 
   useEffect(() => {
-    if (loginData) {
-      history.push("/");
+    if (loginData?.login.user) {
+      history.push("/dashboard");
     }
   }, [loginData, history]);
 

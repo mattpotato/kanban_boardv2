@@ -12,6 +12,7 @@ import session from "express-session";
 import Redis from "ioredis";
 import { COOKIE_NAME, __prod__ } from "./constants";
 import { BoardResolver } from "./resolvers/BoardResolver";
+import { TaskListResolver } from "./resolvers/TaskListResolver";
 
 const main = async () => {
   const conn = await createConnection({
@@ -51,7 +52,7 @@ const main = async () => {
   );
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [UserResolver, BoardResolver, TestResolver],
+      resolvers: [UserResolver, BoardResolver, TaskListResolver, TestResolver],
     }),
     context: ({ req, res }) => ({
       req,

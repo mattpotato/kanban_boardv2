@@ -1,6 +1,6 @@
 import { MyContext } from "./../types";
 import { Board } from "../entities/Board";
-import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Ctx, Int, Mutation, Query, Resolver } from "type-graphql";
 
 @Resolver()
 export class BoardResolver {
@@ -13,6 +13,17 @@ export class BoardResolver {
       name: boardName,
       creatorId: req.session.userId,
     }).save();
+  }
+
+  @Query(() => Board)
+  async getBoardById(
+    @Arg("boardId", () => Int) boardId: number
+  ): Promise<Board | undefined> {
+    return Board.findOne({
+      where: {
+        id: boardId,
+      },
+    });
   }
 
   @Query(() => [Board])

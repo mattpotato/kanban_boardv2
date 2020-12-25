@@ -19,7 +19,13 @@ export type Query = {
   __typename?: 'Query';
   hello: Scalars['String'];
   me?: Maybe<User>;
+  getBoardById: Board;
   getBoards: Array<Board>;
+};
+
+
+export type QueryGetBoardByIdArgs = {
+  boardId: Scalars['Int'];
 };
 
 export type User = {
@@ -99,6 +105,19 @@ export type LoginMutation = (
   ) }
 );
 
+export type GetBoardByIdQueryVariables = Exact<{
+  boardId: Scalars['Int'];
+}>;
+
+
+export type GetBoardByIdQuery = (
+  { __typename?: 'Query' }
+  & { getBoardById: (
+    { __typename?: 'Board' }
+    & Pick<Board, 'id' | 'name' | 'creatorId' | 'createdAt' | 'updatedAt'>
+  ) }
+);
+
 export type GetBoardsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -162,6 +181,43 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const GetBoardByIdDocument = gql`
+    query GetBoardById($boardId: Int!) {
+  getBoardById(boardId: $boardId) {
+    id
+    name
+    creatorId
+    createdAt
+    updatedAt
+  }
+}
+    `;
+
+/**
+ * __useGetBoardByIdQuery__
+ *
+ * To run a query within a React component, call `useGetBoardByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetBoardByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetBoardByIdQuery({
+ *   variables: {
+ *      boardId: // value for 'boardId'
+ *   },
+ * });
+ */
+export function useGetBoardByIdQuery(baseOptions: Apollo.QueryHookOptions<GetBoardByIdQuery, GetBoardByIdQueryVariables>) {
+        return Apollo.useQuery<GetBoardByIdQuery, GetBoardByIdQueryVariables>(GetBoardByIdDocument, baseOptions);
+      }
+export function useGetBoardByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetBoardByIdQuery, GetBoardByIdQueryVariables>) {
+          return Apollo.useLazyQuery<GetBoardByIdQuery, GetBoardByIdQueryVariables>(GetBoardByIdDocument, baseOptions);
+        }
+export type GetBoardByIdQueryHookResult = ReturnType<typeof useGetBoardByIdQuery>;
+export type GetBoardByIdLazyQueryHookResult = ReturnType<typeof useGetBoardByIdLazyQuery>;
+export type GetBoardByIdQueryResult = Apollo.QueryResult<GetBoardByIdQuery, GetBoardByIdQueryVariables>;
 export const GetBoardsDocument = gql`
     query GetBoards {
   getBoards {

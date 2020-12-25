@@ -1,0 +1,9 @@
+query GetBoardById($boardId: Int!) {
+  getBoardById(boardId: $boardId) {
+    id
+    name
+    creatorId
+    createdAt
+    updatedAt
+  }
+}

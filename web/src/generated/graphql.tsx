@@ -21,10 +21,16 @@ export type Query = {
   me?: Maybe<User>;
   getBoardById: Board;
   getBoards: Array<Board>;
+  getTaskLists: Array<TaskList>;
 };
 
 
 export type QueryGetBoardByIdArgs = {
+  boardId: Scalars['Int'];
+};
+
+
+export type QueryGetTaskListsArgs = {
   boardId: Scalars['Int'];
 };
 
@@ -41,8 +47,34 @@ export type Board = {
   name: Scalars['String'];
   creatorId: Scalars['Float'];
   creator: User;
+  taskLists: TaskList;
+  minPos: Scalars['Float'];
+  maxPos: Scalars['Float'];
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
+};
+
+export type TaskList = {
+  __typename?: 'TaskList';
+  id: Scalars['Float'];
+  name: Scalars['String'];
+  boardId: Scalars['Float'];
+  tasks: Array<Task>;
+  minPos: Scalars['Float'];
+  maxPos: Scalars['Float'];
+  pos: Scalars['Float'];
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
+};
+
+export type Task = {
+  __typename?: 'Task';
+  id: Scalars['Float'];
+  name: Scalars['String'];
+  listId: Scalars['Float'];
+  pos: Scalars['Float'];
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
 };
 
 
@@ -51,6 +83,7 @@ export type Mutation = {
   login: UserResponse;
   register: UserResponse;
   createBoard: Board;
+  createTaskList: TaskList;
 };
 
 
@@ -67,6 +100,12 @@ export type MutationRegisterArgs = {
 
 export type MutationCreateBoardArgs = {
   boardName: Scalars['String'];
+};
+
+
+export type MutationCreateTaskListArgs = {
+  boardId: Scalars['Int'];
+  name: Scalars['String'];
 };
 
 export type UserResponse = {
@@ -105,6 +144,20 @@ export type LoginMutation = (
   ) }
 );
 
+export type CreateTaskListMutationVariables = Exact<{
+  boardId: Scalars['Int'];
+  name: Scalars['String'];
+}>;
+
+
+export type CreateTaskListMutation = (
+  { __typename?: 'Mutation' }
+  & { createTaskList: (
+    { __typename?: 'TaskList' }
+    & Pick<TaskList, 'id' | 'name' | 'boardId'>
+  ) }
+);
+
 export type GetBoardByIdQueryVariables = Exact<{
   boardId: Scalars['Int'];
 }>;
@@ -126,6 +179,23 @@ export type GetBoardsQuery = (
   & { getBoards: Array<(
     { __typename?: 'Board' }
     & Pick<Board, 'id' | 'name' | 'creatorId' | 'createdAt' | 'updatedAt'>
+  )> }
+);
+
+export type GetTaskListsQueryVariables = Exact<{
+  boardId: Scalars['Int'];
+}>;
+
+
+export type GetTaskListsQuery = (
+  { __typename?: 'Query' }
+  & { getTaskLists: Array<(
+    { __typename?: 'TaskList' }
+    & Pick<TaskList, 'id' | 'name' | 'boardId'>
+    & { tasks: Array<(
+      { __typename?: 'Task' }
+      & Pick<Task, 'id' | 'name' | 'pos'>
+    )> }
   )> }
 );
 
@@ -181,6 +251,41 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const CreateTaskListDocument = gql`
+    mutation CreateTaskList($boardId: Int!, $name: String!) {
+  createTaskList(boardId: $boardId, name: $name) {
+    id
+    name
+    boardId
+  }
+}
+    `;
+export type CreateTaskListMutationFn = Apollo.MutationFunction<CreateTaskListMutation, CreateTaskListMutationVariables>;
+
+/**
+ * __useCreateTaskListMutation__
+ *
+ * To run a mutation, you first call `useCreateTaskListMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateTaskListMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createTaskListMutation, { data, loading, error }] = useCreateTaskListMutation({
+ *   variables: {
+ *      boardId: // value for 'boardId'
+ *      name: // value for 'name'
+ *   },
+ * });
+ */
+export function useCreateTaskListMutation(baseOptions?: Apollo.MutationHookOptions<CreateTaskListMutation, CreateTaskListMutationVariables>) {
+        return Apollo.useMutation<CreateTaskListMutation, CreateTaskListMutationVariables>(CreateTaskListDocument, baseOptions);
+      }
+export type CreateTaskListMutationHookResult = ReturnType<typeof useCreateTaskListMutation>;
+export type CreateTaskListMutationResult = Apollo.MutationResult<CreateTaskListMutation>;
+export type CreateTaskListMutationOptions = Apollo.BaseMutationOptions<CreateTaskListMutation, CreateTaskListMutationVariables>;
 export const GetBoardByIdDocument = gql`
     query GetBoardById($boardId: Int!) {
   getBoardById(boardId: $boardId) {
@@ -254,6 +359,46 @@ export function useGetBoardsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<
 export type GetBoardsQueryHookResult = ReturnType<typeof useGetBoardsQuery>;
 export type GetBoardsLazyQueryHookResult = ReturnType<typeof useGetBoardsLazyQuery>;
 export type GetBoardsQueryResult = Apollo.QueryResult<GetBoardsQuery, GetBoardsQueryVariables>;
+export const GetTaskListsDocument = gql`
+    query getTaskLists($boardId: Int!) {
+  getTaskLists(boardId: $boardId) {
+    id
+    name
+    boardId
+    tasks {
+      id
+      name
+      pos
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetTaskListsQuery__
+ *
+ * To run a query within a React component, call `useGetTaskListsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTaskListsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTaskListsQuery({
+ *   variables: {
+ *      boardId: // value for 'boardId'
+ *   },
+ * });
+ */
+export function useGetTaskListsQuery(baseOptions: Apollo.QueryHookOptions<GetTaskListsQuery, GetTaskListsQueryVariables>) {
+        return Apollo.useQuery<GetTaskListsQuery, GetTaskListsQueryVariables>(GetTaskListsDocument, baseOptions);
+      }
+export function useGetTaskListsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTaskListsQuery, GetTaskListsQueryVariables>) {
+          return Apollo.useLazyQuery<GetTaskListsQuery, GetTaskListsQueryVariables>(GetTaskListsDocument, baseOptions);
+        }
+export type GetTaskListsQueryHookResult = ReturnType<typeof useGetTaskListsQuery>;
+export type GetTaskListsLazyQueryHookResult = ReturnType<typeof useGetTaskListsLazyQuery>;
+export type GetTaskListsQueryResult = Apollo.QueryResult<GetTaskListsQuery, GetTaskListsQueryVariables>;
 export const MeDocument = gql`
     query Me {
   me {

@@ -3,9 +3,11 @@ query getTaskLists($boardId: Int!) {
     id
     name
     boardId
+    pos
     tasks {
       id
       name
+      listId
       pos
     }
   }

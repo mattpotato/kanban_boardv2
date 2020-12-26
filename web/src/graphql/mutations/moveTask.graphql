@@ -1,0 +1,15 @@
+mutation MoveTask(
+  $taskId: Int!
+  $toListId: Int!
+  $toPos: Float!
+  $boardId: Int!
+  $lastUpdated: String!
+) {
+  moveTask(
+    taskId: $taskId
+    toListId: $toListId
+    toPos: $toPos
+    boardId: $boardId
+    lastUpdated: $lastUpdated
+  )
+}

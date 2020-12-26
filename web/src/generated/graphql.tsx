@@ -85,7 +85,9 @@ export type Mutation = {
   createBoard: Board;
   createTaskList: TaskList;
   deleteTaskList: Scalars['Boolean'];
+  moveTaskList: Scalars['Boolean'];
   createTask: Task;
+  moveTask: Scalars['Boolean'];
   deleteTask: Scalars['Boolean'];
 };
 
@@ -117,9 +119,26 @@ export type MutationDeleteTaskListArgs = {
 };
 
 
+export type MutationMoveTaskListArgs = {
+  lastUpdated: Scalars['String'];
+  boardId: Scalars['Int'];
+  toPos: Scalars['Float'];
+  id: Scalars['Int'];
+};
+
+
 export type MutationCreateTaskArgs = {
   listId: Scalars['Int'];
   taskName: Scalars['String'];
+};
+
+
+export type MutationMoveTaskArgs = {
+  lastUpdated: Scalars['String'];
+  boardId: Scalars['Int'];
+  toPos: Scalars['Float'];
+  toListId: Scalars['Int'];
+  taskId: Scalars['Int'];
 };
 
 
@@ -223,6 +242,33 @@ export type LoginMutation = (
   ) }
 );
 
+export type MoveTaskMutationVariables = Exact<{
+  taskId: Scalars['Int'];
+  toListId: Scalars['Int'];
+  toPos: Scalars['Float'];
+  boardId: Scalars['Int'];
+  lastUpdated: Scalars['String'];
+}>;
+
+
+export type MoveTaskMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'moveTask'>
+);
+
+export type MoveTaskListMutationVariables = Exact<{
+  id: Scalars['Int'];
+  toPos: Scalars['Float'];
+  boardId: Scalars['Int'];
+  lastUpdated: Scalars['String'];
+}>;
+
+
+export type MoveTaskListMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'moveTaskList'>
+);
+
 export type GetBoardByIdQueryVariables = Exact<{
   boardId: Scalars['Int'];
 }>;
@@ -256,10 +302,10 @@ export type GetTaskListsQuery = (
   { __typename?: 'Query' }
   & { getTaskLists: Array<(
     { __typename?: 'TaskList' }
-    & Pick<TaskList, 'id' | 'name' | 'boardId'>
+    & Pick<TaskList, 'id' | 'name' | 'boardId' | 'pos'>
     & { tasks: Array<(
       { __typename?: 'Task' }
-      & Pick<Task, 'id' | 'name' | 'pos'>
+      & Pick<Task, 'id' | 'name' | 'listId' | 'pos'>
     )> }
   )> }
 );
@@ -461,6 +507,84 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const MoveTaskDocument = gql`
+    mutation MoveTask($taskId: Int!, $toListId: Int!, $toPos: Float!, $boardId: Int!, $lastUpdated: String!) {
+  moveTask(
+    taskId: $taskId
+    toListId: $toListId
+    toPos: $toPos
+    boardId: $boardId
+    lastUpdated: $lastUpdated
+  )
+}
+    `;
+export type MoveTaskMutationFn = Apollo.MutationFunction<MoveTaskMutation, MoveTaskMutationVariables>;
+
+/**
+ * __useMoveTaskMutation__
+ *
+ * To run a mutation, you first call `useMoveTaskMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useMoveTaskMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [moveTaskMutation, { data, loading, error }] = useMoveTaskMutation({
+ *   variables: {
+ *      taskId: // value for 'taskId'
+ *      toListId: // value for 'toListId'
+ *      toPos: // value for 'toPos'
+ *      boardId: // value for 'boardId'
+ *      lastUpdated: // value for 'lastUpdated'
+ *   },
+ * });
+ */
+export function useMoveTaskMutation(baseOptions?: Apollo.MutationHookOptions<MoveTaskMutation, MoveTaskMutationVariables>) {
+        return Apollo.useMutation<MoveTaskMutation, MoveTaskMutationVariables>(MoveTaskDocument, baseOptions);
+      }
+export type MoveTaskMutationHookResult = ReturnType<typeof useMoveTaskMutation>;
+export type MoveTaskMutationResult = Apollo.MutationResult<MoveTaskMutation>;
+export type MoveTaskMutationOptions = Apollo.BaseMutationOptions<MoveTaskMutation, MoveTaskMutationVariables>;
+export const MoveTaskListDocument = gql`
+    mutation MoveTaskList($id: Int!, $toPos: Float!, $boardId: Int!, $lastUpdated: String!) {
+  moveTaskList(
+    id: $id
+    toPos: $toPos
+    boardId: $boardId
+    lastUpdated: $lastUpdated
+  )
+}
+    `;
+export type MoveTaskListMutationFn = Apollo.MutationFunction<MoveTaskListMutation, MoveTaskListMutationVariables>;
+
+/**
+ * __useMoveTaskListMutation__
+ *
+ * To run a mutation, you first call `useMoveTaskListMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useMoveTaskListMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [moveTaskListMutation, { data, loading, error }] = useMoveTaskListMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      toPos: // value for 'toPos'
+ *      boardId: // value for 'boardId'
+ *      lastUpdated: // value for 'lastUpdated'
+ *   },
+ * });
+ */
+export function useMoveTaskListMutation(baseOptions?: Apollo.MutationHookOptions<MoveTaskListMutation, MoveTaskListMutationVariables>) {
+        return Apollo.useMutation<MoveTaskListMutation, MoveTaskListMutationVariables>(MoveTaskListDocument, baseOptions);
+      }
+export type MoveTaskListMutationHookResult = ReturnType<typeof useMoveTaskListMutation>;
+export type MoveTaskListMutationResult = Apollo.MutationResult<MoveTaskListMutation>;
+export type MoveTaskListMutationOptions = Apollo.BaseMutationOptions<MoveTaskListMutation, MoveTaskListMutationVariables>;
 export const GetBoardByIdDocument = gql`
     query GetBoardById($boardId: Int!) {
   getBoardById(boardId: $boardId) {
@@ -540,9 +664,11 @@ export const GetTaskListsDocument = gql`
     id
     name
     boardId
+    pos
     tasks {
       id
       name
+      listId
       pos
     }
   }

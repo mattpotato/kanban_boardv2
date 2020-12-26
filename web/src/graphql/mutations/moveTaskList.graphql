@@ -1,0 +1,13 @@
+mutation MoveTaskList(
+  $id: Int!
+  $toPos: Float!
+  $boardId: Int!
+  $lastUpdated: String!
+) {
+  moveTaskList(
+    id: $id
+    toPos: $toPos
+    boardId: $boardId
+    lastUpdated: $lastUpdated
+  )
+}

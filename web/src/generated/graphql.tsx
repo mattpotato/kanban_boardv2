@@ -84,6 +84,9 @@ export type Mutation = {
   register: UserResponse;
   createBoard: Board;
   createTaskList: TaskList;
+  deleteTaskList: Scalars['Boolean'];
+  createTask: Task;
+  deleteTask: Scalars['Boolean'];
 };
 
 
@@ -108,6 +111,23 @@ export type MutationCreateTaskListArgs = {
   name: Scalars['String'];
 };
 
+
+export type MutationDeleteTaskListArgs = {
+  id: Scalars['Int'];
+};
+
+
+export type MutationCreateTaskArgs = {
+  listId: Scalars['Int'];
+  taskName: Scalars['String'];
+};
+
+
+export type MutationDeleteTaskArgs = {
+  listId: Scalars['Int'];
+  id: Scalars['Int'];
+};
+
 export type UserResponse = {
   __typename?: 'UserResponse';
   errors?: Maybe<Array<FieldError>>;
@@ -125,6 +145,55 @@ export type LoginInput = {
   password: Scalars['String'];
 };
 
+export type CreateTaskMutationVariables = Exact<{
+  taskName: Scalars['String'];
+  listId: Scalars['Int'];
+}>;
+
+
+export type CreateTaskMutation = (
+  { __typename?: 'Mutation' }
+  & { createTask: (
+    { __typename?: 'Task' }
+    & Pick<Task, 'id' | 'name' | 'listId' | 'pos'>
+  ) }
+);
+
+export type CreateTaskListMutationVariables = Exact<{
+  boardId: Scalars['Int'];
+  name: Scalars['String'];
+}>;
+
+
+export type CreateTaskListMutation = (
+  { __typename?: 'Mutation' }
+  & { createTaskList: (
+    { __typename?: 'TaskList' }
+    & Pick<TaskList, 'id' | 'name' | 'boardId'>
+  ) }
+);
+
+export type DeleteTaskMutationVariables = Exact<{
+  id: Scalars['Int'];
+  listId: Scalars['Int'];
+}>;
+
+
+export type DeleteTaskMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'deleteTask'>
+);
+
+export type DeleteTaskListMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type DeleteTaskListMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'deleteTaskList'>
+);
+
 export type LoginMutationVariables = Exact<{
   options: LoginInput;
 }>;
@@ -141,20 +210,6 @@ export type LoginMutation = (
       { __typename?: 'FieldError' }
       & Pick<FieldError, 'field' | 'message'>
     )>> }
-  ) }
-);
-
-export type CreateTaskListMutationVariables = Exact<{
-  boardId: Scalars['Int'];
-  name: Scalars['String'];
-}>;
-
-
-export type CreateTaskListMutation = (
-  { __typename?: 'Mutation' }
-  & { createTaskList: (
-    { __typename?: 'TaskList' }
-    & Pick<TaskList, 'id' | 'name' | 'boardId'>
   ) }
 );
 
@@ -211,6 +266,138 @@ export type MeQuery = (
 );
 
 
+export const CreateTaskDocument = gql`
+    mutation CreateTask($taskName: String!, $listId: Int!) {
+  createTask(taskName: $taskName, listId: $listId) {
+    id
+    name
+    listId
+    pos
+  }
+}
+    `;
+export type CreateTaskMutationFn = Apollo.MutationFunction<CreateTaskMutation, CreateTaskMutationVariables>;
+
+/**
+ * __useCreateTaskMutation__
+ *
+ * To run a mutation, you first call `useCreateTaskMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateTaskMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createTaskMutation, { data, loading, error }] = useCreateTaskMutation({
+ *   variables: {
+ *      taskName: // value for 'taskName'
+ *      listId: // value for 'listId'
+ *   },
+ * });
+ */
+export function useCreateTaskMutation(baseOptions?: Apollo.MutationHookOptions<CreateTaskMutation, CreateTaskMutationVariables>) {
+        return Apollo.useMutation<CreateTaskMutation, CreateTaskMutationVariables>(CreateTaskDocument, baseOptions);
+      }
+export type CreateTaskMutationHookResult = ReturnType<typeof useCreateTaskMutation>;
+export type CreateTaskMutationResult = Apollo.MutationResult<CreateTaskMutation>;
+export type CreateTaskMutationOptions = Apollo.BaseMutationOptions<CreateTaskMutation, CreateTaskMutationVariables>;
+export const CreateTaskListDocument = gql`
+    mutation CreateTaskList($boardId: Int!, $name: String!) {
+  createTaskList(boardId: $boardId, name: $name) {
+    id
+    name
+    boardId
+  }
+}
+    `;
+export type CreateTaskListMutationFn = Apollo.MutationFunction<CreateTaskListMutation, CreateTaskListMutationVariables>;
+
+/**
+ * __useCreateTaskListMutation__
+ *
+ * To run a mutation, you first call `useCreateTaskListMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateTaskListMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createTaskListMutation, { data, loading, error }] = useCreateTaskListMutation({
+ *   variables: {
+ *      boardId: // value for 'boardId'
+ *      name: // value for 'name'
+ *   },
+ * });
+ */
+export function useCreateTaskListMutation(baseOptions?: Apollo.MutationHookOptions<CreateTaskListMutation, CreateTaskListMutationVariables>) {
+        return Apollo.useMutation<CreateTaskListMutation, CreateTaskListMutationVariables>(CreateTaskListDocument, baseOptions);
+      }
+export type CreateTaskListMutationHookResult = ReturnType<typeof useCreateTaskListMutation>;
+export type CreateTaskListMutationResult = Apollo.MutationResult<CreateTaskListMutation>;
+export type CreateTaskListMutationOptions = Apollo.BaseMutationOptions<CreateTaskListMutation, CreateTaskListMutationVariables>;
+export const DeleteTaskDocument = gql`
+    mutation DeleteTask($id: Int!, $listId: Int!) {
+  deleteTask(id: $id, listId: $listId)
+}
+    `;
+export type DeleteTaskMutationFn = Apollo.MutationFunction<DeleteTaskMutation, DeleteTaskMutationVariables>;
+
+/**
+ * __useDeleteTaskMutation__
+ *
+ * To run a mutation, you first call `useDeleteTaskMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteTaskMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteTaskMutation, { data, loading, error }] = useDeleteTaskMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      listId: // value for 'listId'
+ *   },
+ * });
+ */
+export function useDeleteTaskMutation(baseOptions?: Apollo.MutationHookOptions<DeleteTaskMutation, DeleteTaskMutationVariables>) {
+        return Apollo.useMutation<DeleteTaskMutation, DeleteTaskMutationVariables>(DeleteTaskDocument, baseOptions);
+      }
+export type DeleteTaskMutationHookResult = ReturnType<typeof useDeleteTaskMutation>;
+export type DeleteTaskMutationResult = Apollo.MutationResult<DeleteTaskMutation>;
+export type DeleteTaskMutationOptions = Apollo.BaseMutationOptions<DeleteTaskMutation, DeleteTaskMutationVariables>;
+export const DeleteTaskListDocument = gql`
+    mutation DeleteTaskList($id: Int!) {
+  deleteTaskList(id: $id)
+}
+    `;
+export type DeleteTaskListMutationFn = Apollo.MutationFunction<DeleteTaskListMutation, DeleteTaskListMutationVariables>;
+
+/**
+ * __useDeleteTaskListMutation__
+ *
+ * To run a mutation, you first call `useDeleteTaskListMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteTaskListMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteTaskListMutation, { data, loading, error }] = useDeleteTaskListMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteTaskListMutation(baseOptions?: Apollo.MutationHookOptions<DeleteTaskListMutation, DeleteTaskListMutationVariables>) {
+        return Apollo.useMutation<DeleteTaskListMutation, DeleteTaskListMutationVariables>(DeleteTaskListDocument, baseOptions);
+      }
+export type DeleteTaskListMutationHookResult = ReturnType<typeof useDeleteTaskListMutation>;
+export type DeleteTaskListMutationResult = Apollo.MutationResult<DeleteTaskListMutation>;
+export type DeleteTaskListMutationOptions = Apollo.BaseMutationOptions<DeleteTaskListMutation, DeleteTaskListMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($options: LoginInput!) {
   login(options: $options) {
@@ -251,41 +438,6 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
-export const CreateTaskListDocument = gql`
-    mutation CreateTaskList($boardId: Int!, $name: String!) {
-  createTaskList(boardId: $boardId, name: $name) {
-    id
-    name
-    boardId
-  }
-}
-    `;
-export type CreateTaskListMutationFn = Apollo.MutationFunction<CreateTaskListMutation, CreateTaskListMutationVariables>;
-
-/**
- * __useCreateTaskListMutation__
- *
- * To run a mutation, you first call `useCreateTaskListMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateTaskListMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createTaskListMutation, { data, loading, error }] = useCreateTaskListMutation({
- *   variables: {
- *      boardId: // value for 'boardId'
- *      name: // value for 'name'
- *   },
- * });
- */
-export function useCreateTaskListMutation(baseOptions?: Apollo.MutationHookOptions<CreateTaskListMutation, CreateTaskListMutationVariables>) {
-        return Apollo.useMutation<CreateTaskListMutation, CreateTaskListMutationVariables>(CreateTaskListDocument, baseOptions);
-      }
-export type CreateTaskListMutationHookResult = ReturnType<typeof useCreateTaskListMutation>;
-export type CreateTaskListMutationResult = Apollo.MutationResult<CreateTaskListMutation>;
-export type CreateTaskListMutationOptions = Apollo.BaseMutationOptions<CreateTaskListMutation, CreateTaskListMutationVariables>;
 export const GetBoardByIdDocument = gql`
     query GetBoardById($boardId: Int!) {
   getBoardById(boardId: $boardId) {

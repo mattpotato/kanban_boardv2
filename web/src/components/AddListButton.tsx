@@ -12,15 +12,21 @@ export const AddListButton: React.FC<AddListButtonProps> = ({ boardId }) => {
   const [createList] = useCreateTaskListMutation();
   const [show, setShow] = useState(false);
 
-  const onSubmit = (data: any) => {
-    console.log(data);
-    // send data
-    createList({
-      variables: {
-        boardId,
-        name: data.name,
-      },
-    });
+  const onSubmit = ({ listName }: { listName: string }) => {
+    try {
+      createList({
+        variables: {
+          boardId,
+          name: listName,
+        },
+
+        update: (cache) => {
+          cache.evict({ fieldName: "getTaskLists" });
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
     reset();
   };
 

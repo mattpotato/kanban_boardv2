@@ -1,48 +1,55 @@
-import { Box, Button } from "@chakra-ui/react";
+import { Box, Button, Flex, Stack } from "@chakra-ui/react";
 import React from "react";
-import { Draggable } from "react-beautiful-dnd";
-import { TaskList } from "../generated/graphql";
+import { Draggable, Droppable } from "react-beautiful-dnd";
+import { TaskList, useDeleteTaskListMutation } from "../generated/graphql";
+import { AddTaskButton } from "./AddTaskButton";
+import TaskBox from "./TaskBox";
 
 interface ListBoxProps {
   data: TaskList;
   col: number;
 }
 
-const ListBox: React.FC<ListBoxProps> = ({ col, data }) => {
+const ListBox: React.FC<ListBoxProps> = React.memo(({ col, data }) => {
+  const [deleteList] = useDeleteTaskListMutation();
+
   return (
-    <Draggable draggableId={"l" + col} index={col}>
+    <Draggable draggableId={"l" + data.id} index={col}>
       {(provided) => (
         <div ref={provided.innerRef} {...provided.draggableProps}>
-          <Box margin="10px" {...provided.dragHandleProps}>
-            {data.name}
-          </Box>
-          <Box
-            width="300px"
-            borderRadius="3px"
-            borderColor="rgb(255, 255, 255)"
-            background="rgba(138, 148, 145, 0.1)"
-            margin="10px"
-            padding="10px"
-          >
-            task
-          </Box>
-          <Box
-            width="300px"
-            borderRadius="3px"
-            borderColor="rgb(255, 255, 255)"
-            background="rgba(138, 148, 145, 0.1)"
-            margin="10px"
-            padding="10px"
-          >
-            task
-          </Box>
-          <Button variant="ghost" colorScheme="green">
-            Add Task
-          </Button>
+          <Flex justifyContent="space-between" {...provided.dragHandleProps}>
+            <Box margin="10px">{data.name}</Box>
+            <Button
+              onClick={() => {
+                deleteList({
+                  variables: {
+                    id: data.id,
+                  },
+                  update: (cache) => {
+                    cache.evict({ fieldName: "getTaskLists" });
+                  },
+                });
+              }}
+            >
+              close
+            </Button>
+          </Flex>
+          <Droppable droppableId={"dl" + col}>
+            {(provided) => (
+              <div ref={provided.innerRef} {...provided.droppableProps}>
+                <Stack>
+                  {data.tasks.map((task, index) => (
+                    <TaskBox key={task.id} data={task} index={index} />
+                  ))}
+                </Stack>
+              </div>
+            )}
+          </Droppable>
+          <AddTaskButton listId={data.id} />
         </div>
       )}
     </Draggable>
   );
-};
+});
 
 export default ListBox;

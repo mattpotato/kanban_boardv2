@@ -34,18 +34,19 @@ const ListBox: React.FC<ListBoxProps> = React.memo(({ col, data }) => {
               close
             </Button>
           </Flex>
-          <Droppable droppableId={"dl" + col}>
+          <Droppable droppableId={"" + col}>
             {(provided) => (
               <div ref={provided.innerRef} {...provided.droppableProps}>
                 <Stack>
                   {data.tasks.map((task, index) => (
                     <TaskBox key={task.id} data={task} index={index} />
                   ))}
+                  {provided.placeholder}
+                  <AddTaskButton listId={data.id} />
                 </Stack>
               </div>
             )}
           </Droppable>
-          <AddTaskButton listId={data.id} />
         </div>
       )}
     </Draggable>

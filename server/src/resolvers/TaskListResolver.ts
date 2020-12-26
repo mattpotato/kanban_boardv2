@@ -4,7 +4,7 @@ import { Arg, Int, Mutation, Query, Resolver } from "type-graphql";
 
 @Resolver()
 export class TaskListResolver {
-  @Mutation()
+  @Mutation(() => TaskList)
   async createTaskList(
     @Arg("name") name: string,
     @Arg("boardId", () => Int) boardId: number
@@ -36,7 +36,9 @@ export class TaskListResolver {
   }
 
   @Query(() => [TaskList])
-  getTaskLists(@Arg("boardId") boardId: number): Promise<TaskList[]> {
+  getTaskLists(
+    @Arg("boardId", () => Int) boardId: number
+  ): Promise<TaskList[]> {
     return TaskList.find({
       where: {
         boardId,

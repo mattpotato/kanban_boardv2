@@ -10,6 +10,8 @@ import { UserResolver } from "./resolvers/UserResolver";
 import connectRedis from "connect-redis";
 import session from "express-session";
 import Redis from "ioredis";
+import http from "http";
+import { RedisPubSub } from "graphql-redis-subscriptions";
 import { COOKIE_NAME, __prod__ } from "./constants";
 import { BoardResolver } from "./resolvers/BoardResolver";
 import { TaskListResolver } from "./resolvers/TaskListResolver";
@@ -27,9 +29,14 @@ const main = async () => {
 
   await conn.runMigrations();
   const app = express();
+  const ws = http.createServer(app);
 
   const RedisStore = connectRedis(session);
   const redis = new Redis(process.env.REDIS_URL);
+  const pubSub = new RedisPubSub({
+    publisher: new Redis(process.env.REDIS_URL),
+    subscriber: new Redis(process.env.REDIS_URL),
+  });
 
   app.set("trust proxy", 1);
   app.use(
@@ -60,6 +67,7 @@ const main = async () => {
         TaskResolver,
         TestResolver,
       ],
+      pubSub: pubSub,
     }),
     context: ({ req, res }) => ({
       req,
@@ -75,8 +83,9 @@ const main = async () => {
       credentials: true,
     },
   });
+  apolloServer.installSubscriptionHandlers(ws);
 
-  app.listen(process.env.PORT, () => {
+  ws.listen(process.env.PORT, () => {
     console.log(`server started, listening at port ${process.env.PORT}`);
   });
 };

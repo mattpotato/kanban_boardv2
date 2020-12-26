@@ -1,0 +1,7 @@
+subscription OnNewTaskList($boardId: Int!) {
+  onNewTaskList(boardId: $boardId) {
+    id
+    name
+    boardId
+  }
+}

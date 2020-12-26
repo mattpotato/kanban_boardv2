@@ -145,6 +145,16 @@ export type LoginInput = {
   password: Scalars['String'];
 };
 
+export type Subscription = {
+  __typename?: 'Subscription';
+  onNewTaskList: TaskList;
+};
+
+
+export type SubscriptionOnNewTaskListArgs = {
+  boardId: Scalars['Int'];
+};
+
 export type CreateTaskMutationVariables = Exact<{
   taskName: Scalars['String'];
   listId: Scalars['Int'];
@@ -263,6 +273,19 @@ export type MeQuery = (
     { __typename?: 'User' }
     & Pick<User, 'email'>
   )> }
+);
+
+export type OnNewTaskListSubscriptionVariables = Exact<{
+  boardId: Scalars['Int'];
+}>;
+
+
+export type OnNewTaskListSubscription = (
+  { __typename?: 'Subscription' }
+  & { onNewTaskList: (
+    { __typename?: 'TaskList' }
+    & Pick<TaskList, 'id' | 'name' | 'boardId'>
+  ) }
 );
 
 
@@ -583,3 +606,34 @@ export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const OnNewTaskListDocument = gql`
+    subscription OnNewTaskList($boardId: Int!) {
+  onNewTaskList(boardId: $boardId) {
+    id
+    name
+    boardId
+  }
+}
+    `;
+
+/**
+ * __useOnNewTaskListSubscription__
+ *
+ * To run a query within a React component, call `useOnNewTaskListSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useOnNewTaskListSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOnNewTaskListSubscription({
+ *   variables: {
+ *      boardId: // value for 'boardId'
+ *   },
+ * });
+ */
+export function useOnNewTaskListSubscription(baseOptions: Apollo.SubscriptionHookOptions<OnNewTaskListSubscription, OnNewTaskListSubscriptionVariables>) {
+        return Apollo.useSubscription<OnNewTaskListSubscription, OnNewTaskListSubscriptionVariables>(OnNewTaskListDocument, baseOptions);
+      }
+export type OnNewTaskListSubscriptionHookResult = ReturnType<typeof useOnNewTaskListSubscription>;
+export type OnNewTaskListSubscriptionResult = Apollo.SubscriptionResult<OnNewTaskListSubscription>;

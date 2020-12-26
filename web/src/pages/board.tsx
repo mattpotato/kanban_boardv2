@@ -1,5 +1,5 @@
 import { Box, Flex } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect } from "react";
 import { RouteComponentProps, useHistory } from "react-router-dom";
 import { AddListButton } from "../components/AddListButton";
 import Layout from "../components/Layout";
@@ -9,7 +9,9 @@ import {
   TaskList,
   useGetBoardByIdQuery,
   useGetTaskListsQuery,
+  useOnNewTaskListSubscription,
 } from "../generated/graphql";
+import { useApolloClient } from "@apollo/client";
 
 interface BoardRouteInfo {
   boardId: string;
@@ -17,6 +19,7 @@ interface BoardRouteInfo {
 
 const Board: React.FC<RouteComponentProps<BoardRouteInfo>> = (props) => {
   const history = useHistory();
+  const client = useApolloClient();
 
   const { data } = useGetBoardByIdQuery({
     variables: {
@@ -35,11 +38,24 @@ const Board: React.FC<RouteComponentProps<BoardRouteInfo>> = (props) => {
     },
   });
 
+  const { data: subData } = useOnNewTaskListSubscription({
+    variables: {
+      boardId: parseInt(props.match.params.boardId),
+    },
+  });
+
   const onDragEnd = ({ source, destination, type }: DropResult) => {};
+
+  useEffect(() => {
+    if (subData?.onNewTaskList) {
+      client.cache.evict({ fieldName: "getTaskLists" });
+    }
+  }, [subData, client]);
 
   return (
     <Layout>
       <Box>Board</Box>
+      {subData?.onNewTaskList ? <Box>{subData.onNewTaskList.name}</Box> : null}
       {data?.getBoardById.name ? <Box>{data.getBoardById.name}</Box> : null}
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="board" direction="horizontal" type="COLUMN">

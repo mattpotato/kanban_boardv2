@@ -35,6 +35,12 @@ export class TaskListResolver {
     return taskList;
   }
 
+  @Mutation(() => Boolean)
+  async deleteTaskList(@Arg("id", () => Int) id: number): Promise<Boolean> {
+    await TaskList.delete(id);
+    return true;
+  }
+
   @Query(() => [TaskList])
   getTaskLists(
     @Arg("boardId", () => Int) boardId: number

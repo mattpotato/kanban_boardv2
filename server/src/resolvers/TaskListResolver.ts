@@ -1,13 +1,24 @@
 import { Board } from "../entities/Board";
 import { TaskList } from "../entities/TaskList";
-import { Arg, Int, Mutation, Query, Resolver } from "type-graphql";
+import {
+  Arg,
+  Int,
+  Mutation,
+  PubSub,
+  PubSubEngine,
+  Query,
+  Resolver,
+  Root,
+  Subscription,
+} from "type-graphql";
 
 @Resolver()
 export class TaskListResolver {
   @Mutation(() => TaskList)
   async createTaskList(
     @Arg("name") name: string,
-    @Arg("boardId", () => Int) boardId: number
+    @Arg("boardId", () => Int) boardId: number,
+    @PubSub() publish: PubSubEngine
   ): Promise<TaskList | undefined> {
     // check if boardId exists
     let board = await Board.findOne({
@@ -31,6 +42,10 @@ export class TaskListResolver {
       await taskList.save();
       await board.save();
     }
+    if (taskList) {
+      await publish.publish("TASKLIST", taskList);
+      console.log("PUBLISHED");
+    }
 
     return taskList;
   }
@@ -51,5 +66,18 @@ export class TaskListResolver {
       },
       relations: ["tasks"],
     });
+  }
+
+  @Subscription(() => TaskList, {
+    topics: "TASKLIST",
+    filter: ({ args, payload }) => {
+      return args.boardId === payload.boardId;
+    },
+  })
+  onNewTaskList(
+    @Arg("boardId", () => Int) boardId: number,
+    @Root() newTaskList: TaskList
+  ) {
+    return newTaskList;
   }
 }

@@ -1,0 +1,12 @@
+query getTaskLists($boardId: Int!) {
+  getTaskLists(boardId: $boardId) {
+    id
+    name
+    boardId
+    tasks {
+      id
+      name
+      pos
+    }
+  }
+}

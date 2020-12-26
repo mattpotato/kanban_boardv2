@@ -36,8 +36,19 @@ function Provider({ children }: { children: React.ReactNode }) {
 
   const client = new ApolloClient({
     link: splitLink,
-    // uri: "http://localhost:4000/graphql",
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({
+      typePolicies: {
+        TaskList: {
+          fields: {
+            tasks: {
+              merge(_existing, incoming) {
+                return [...incoming];
+              },
+            },
+          },
+        },
+      },
+    }),
     credentials: "include",
   });
 

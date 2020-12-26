@@ -13,6 +13,7 @@ import Redis from "ioredis";
 import { COOKIE_NAME, __prod__ } from "./constants";
 import { BoardResolver } from "./resolvers/BoardResolver";
 import { TaskListResolver } from "./resolvers/TaskListResolver";
+import { TaskResolver } from "./resolvers/TaskResolver";
 
 const main = async () => {
   const conn = await createConnection({
@@ -52,7 +53,13 @@ const main = async () => {
   );
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [UserResolver, BoardResolver, TaskListResolver, TestResolver],
+      resolvers: [
+        UserResolver,
+        BoardResolver,
+        TaskListResolver,
+        TaskResolver,
+        TestResolver,
+      ],
     }),
     context: ({ req, res }) => ({
       req,

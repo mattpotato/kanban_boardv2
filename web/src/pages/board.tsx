@@ -328,17 +328,17 @@ const Board: React.FC<RouteComponentProps<BoardRouteInfo>> = (props) => {
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="board" direction="horizontal" type="COLUMN">
           {(provided) => (
-            <Flex ref={provided.innerRef}>
+            <Flex height="100%" overflowX="auto" ref={provided.innerRef}>
               {(lists as []).map((list: TaskList, index) => (
                 <ListBox key={list.id} col={index} data={list} />
               ))}
               {provided.placeholder}
+              {data?.getBoardById ? (
+                <AddListButton boardId={data.getBoardById.id} />
+              ) : null}
             </Flex>
           )}
         </Droppable>
-        {data?.getBoardById ? (
-          <AddListButton boardId={data.getBoardById.id} />
-        ) : null}
       </DragDropContext>
     </Layout>
   );

@@ -1,6 +1,7 @@
-import { Flex, FormControl, Box, Input, Button } from "@chakra-ui/react";
+import { Flex, FormControl, Button, Stack, Textarea } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { FaPlus } from "react-icons/fa";
 import { useCreateTaskMutation } from "../generated/graphql";
 
 interface AddTaskButtonProps {
@@ -14,38 +15,66 @@ export const AddTaskButton: React.FC<AddTaskButtonProps> = ({ listId }) => {
 
   const onSubmit = ({ taskName }: { taskName: string }) => {
     // send data
-    try {
-      createTask({
-        variables: {
-          taskName,
-          listId,
-        },
+    if (taskName.length > 0) {
+      try {
+        createTask({
+          variables: {
+            taskName,
+            listId,
+          },
 
-        update: (cache) => {
-          cache.evict({ fieldName: "getTaskLists" });
-        },
-      });
-    } catch (err) {
-      console.log(err);
+          update: (cache) => {
+            cache.evict({ fieldName: "getTaskLists" });
+          },
+        });
+      } catch (err) {
+        console.log(err);
+      }
     }
+    setShow(false);
     reset();
   };
 
   return (
     <Flex as="form" flexDirection="column" onSubmit={handleSubmit(onSubmit)}>
       <FormControl>
-        <Box mt={4}>
-          <Input
-            autoFocus={show}
-            type="text"
-            placeholder="Enter Task Name..."
-            name="taskName"
-            ref={register}
-          />
-          <Button type="submit" mt={4} variant="solid" colorScheme="green">
-            Add Task
+        {show ? (
+          <Stack>
+            <Textarea
+              autoFocus={show}
+              type="text"
+              placeholder="Enter Task Name..."
+              name="taskName"
+              ref={register}
+              onBlur={handleSubmit(onSubmit)}
+              width="300px"
+              minHeight="50px"
+              resize="none"
+              borderColor="rgb(255, 255, 255)"
+              background="rgba(138, 148, 145, 0.1)"
+              marginLeft="10px"
+              padding="10px"
+            />
+            <Button
+              marginLeft="10px"
+              type="submit"
+              mt={4}
+              variant="solid"
+              colorScheme="green"
+            >
+              Add Task
+            </Button>
+          </Stack>
+        ) : (
+          <Button
+            variant="ghost"
+            leftIcon={<FaPlus />}
+            marginLeft="10px"
+            onClick={() => setShow(true)}
+          >
+            New Task
           </Button>
-        </Box>
+        )}
       </FormControl>
     </Flex>
   );

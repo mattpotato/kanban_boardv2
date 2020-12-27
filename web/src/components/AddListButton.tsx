@@ -2,7 +2,7 @@ import { Flex, FormControl, Box, Input, Button } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useCreateTaskListMutation } from "../generated/graphql";
-
+import { FaPlus } from "react-icons/fa";
 interface AddListButtonProps {
   boardId: number;
 }
@@ -13,38 +13,48 @@ export const AddListButton: React.FC<AddListButtonProps> = ({ boardId }) => {
   const [show, setShow] = useState(false);
 
   const onSubmit = ({ listName }: { listName: string }) => {
-    try {
-      createList({
-        variables: {
-          boardId,
-          name: listName,
-        },
+    if (listName.length > 0) {
+      try {
+        createList({
+          variables: {
+            boardId,
+            name: listName,
+          },
 
-        update: (cache) => {
-          cache.evict({ fieldName: "getTaskLists" });
-        },
-      });
-    } catch (err) {
-      console.log(err);
+          update: (cache) => {
+            cache.evict({ fieldName: "getBoardById" });
+            cache.evict({ fieldName: "getTaskLists" });
+          },
+        });
+      } catch (err) {
+        console.log(err);
+      }
     }
+    setShow(false);
     reset();
   };
 
   return (
     <Flex as="form" flexDirection="column" onSubmit={handleSubmit(onSubmit)}>
-      <FormControl>
-        <Box mt={4}>
+      <FormControl ml="10px">
+        {show ? (
           <Input
             autoFocus={show}
             type="text"
             placeholder="Enter List Name..."
             name="listName"
+            onBlur={handleSubmit(onSubmit)}
             ref={register}
           />
-          <Button mt={4} type="submit">
-            Add List
+        ) : (
+          <Button
+            variant="ghost"
+            leftIcon={<FaPlus />}
+            onClick={() => setShow(true)}
+          >
+            New List
           </Button>
-        </Box>
+        )}
       </FormControl>
     </Flex>
   );

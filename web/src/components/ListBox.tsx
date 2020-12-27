@@ -18,7 +18,9 @@ const ListBox: React.FC<ListBoxProps> = React.memo(({ col, data }) => {
       {(provided) => (
         <div ref={provided.innerRef} {...provided.draggableProps}>
           <Flex justifyContent="space-between" {...provided.dragHandleProps}>
-            <Box margin="10px">{data.name}</Box>
+            <Box marginTop="10px" marginLeft="25px">
+              {data.name}
+            </Box>
             <Button
               onClick={() => {
                 deleteList({
@@ -37,7 +39,7 @@ const ListBox: React.FC<ListBoxProps> = React.memo(({ col, data }) => {
           <Droppable droppableId={"" + col}>
             {(provided) => (
               <div ref={provided.innerRef} {...provided.droppableProps}>
-                <Stack>
+                <Stack width="300px" margin="10px">
                   {data.tasks.map((task, index) => (
                     <TaskBox key={task.id} data={task} index={index} />
                   ))}

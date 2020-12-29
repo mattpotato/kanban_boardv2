@@ -1,10 +1,20 @@
-import { Box, Button, Flex, Stack } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  IconButton,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Stack,
+} from "@chakra-ui/react";
 import React from "react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import { TaskList, useDeleteTaskListMutation } from "../generated/graphql";
 import { AddTaskButton } from "./AddTaskButton";
 import TaskBox from "./TaskBox";
-
+import { BsThreeDots } from "react-icons/bs";
 interface ListBoxProps {
   data: TaskList;
   col: number;
@@ -21,20 +31,33 @@ const ListBox: React.FC<ListBoxProps> = React.memo(({ col, data }) => {
             <Box marginTop="10px" marginLeft="25px">
               {data.name}
             </Box>
-            <Button
-              onClick={() => {
-                deleteList({
-                  variables: {
-                    id: data.id,
-                  },
-                  update: (cache) => {
-                    cache.evict({ fieldName: "getTaskLists" });
-                  },
-                });
-              }}
-            >
-              close
-            </Button>
+            <Menu>
+              <MenuButton
+                as={IconButton}
+                variant="ghost"
+                aria-label="Options"
+                fontSize="20px"
+                icon={<BsThreeDots />}
+              >
+                Actions
+              </MenuButton>
+              <MenuList>
+                <MenuItem
+                  onClick={() => {
+                    deleteList({
+                      variables: {
+                        id: data.id,
+                      },
+                      update: (cache) => {
+                        cache.evict({ fieldName: "getTaskLists" });
+                      },
+                    });
+                  }}
+                >
+                  Delete
+                </MenuItem>
+              </MenuList>
+            </Menu>
           </Flex>
           <Droppable droppableId={"" + col}>
             {(provided) => (

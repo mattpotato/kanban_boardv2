@@ -20,7 +20,7 @@ export class TaskListResolver {
   async createTaskList(
     @Arg("name") name: string,
     @Arg("boardId", () => Int) boardId: number,
-    @PubSub() publish: PubSubEngine
+    @PubSub() pubsub: PubSubEngine
   ): Promise<TaskList | undefined> {
     // check if boardId exists
     let board = await Board.findOne({
@@ -41,11 +41,18 @@ export class TaskListResolver {
       taskList.pos = board.maxPos + 65535;
       taskList.tasks = [];
       board.maxPos = taskList.pos;
+      board.updatedAt = new Date();
       await taskList.save();
       await board.save();
     }
     if (taskList) {
-      await publish.publish("TASKLIST", taskList);
+      console.log("HELLO");
+      await pubsub.publish("TASKLIST", taskList);
+      await pubsub.publish("ACTIVITY", {
+        boardId: board?.id,
+        message: "Task List Created",
+      });
+      console.log("DATE: " + board?.updatedAt);
       console.log("PUBLISHED");
     }
 
@@ -53,8 +60,13 @@ export class TaskListResolver {
   }
 
   @Mutation(() => Boolean)
-  async deleteTaskList(@Arg("id", () => Int) id: number): Promise<Boolean> {
-    await TaskList.delete(id);
+  async deleteTaskList(
+    @Arg("id", () => Int) id: number,
+    @Arg("boardId", () => Int) boardId: number,
+    @PubSub() pubsub: PubSubEngine
+  ): Promise<Boolean> {
+    await TaskList.delete({ id, boardId });
+    pubsub.publish("ACTIVITY", { message: "Task List Deleted" });
     return true;
   }
 
@@ -63,7 +75,8 @@ export class TaskListResolver {
     @Arg("id", () => Int) id: number,
     @Arg("toPos", () => Float) toPos: number,
     @Arg("boardId", () => Int) boardId: number,
-    @Arg("lastUpdated") lastUpdated: string
+    @Arg("lastUpdated") lastUpdated: string,
+    @PubSub() pubsub: PubSubEngine
   ): Promise<Boolean> {
     const connection = getConnection();
     const queryRunner = connection.createQueryRunner();
@@ -94,6 +107,10 @@ export class TaskListResolver {
           // update board
           await queryRunner.manager.save(board);
           await queryRunner.commitTransaction();
+          await pubsub.publish("ACTIVITY", {
+            boardId: board.id,
+            message: "Moved Task List",
+          });
         } catch (err) {
           queryRunner.rollbackTransaction();
         } finally {
@@ -125,11 +142,11 @@ export class TaskListResolver {
   @Subscription(() => TaskList, {
     topics: "TASKLIST",
     filter: ({ args, payload }) => {
-      return args.boardId === payload.boardId;
+      return args._boardId === payload.boardId;
     },
   })
   onNewTaskList(
-    @Arg("boardId", () => Int) boardId: number,
+    @Arg("boardId", () => Int) _boardId: number,
     @Root() newTaskList: TaskList
   ) {
     return newTaskList;

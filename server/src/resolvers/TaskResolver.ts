@@ -1,7 +1,15 @@
 import { TaskList } from "./../entities/TaskList";
 import { Task } from "./../entities/Task";
 import { Board } from "./../entities/Board";
-import { Arg, Float, Int, Mutation, Resolver } from "type-graphql";
+import {
+  Arg,
+  Float,
+  Int,
+  Mutation,
+  PubSub,
+  PubSubEngine,
+  Resolver,
+} from "type-graphql";
 import { getConnection } from "typeorm";
 
 @Resolver()
@@ -9,7 +17,9 @@ export class TaskResolver {
   @Mutation(() => Task)
   async createTask(
     @Arg("taskName", () => String) taskName: string,
-    @Arg("listId", () => Int) listId: number
+    @Arg("listId", () => Int) listId: number,
+    @Arg("boardId", () => Int) boardId: number,
+    @PubSub() pubsub: PubSubEngine
   ): Promise<Task | undefined> {
     let taskList = await TaskList.findOne({ id: listId });
     if (taskList) {
@@ -21,7 +31,8 @@ export class TaskResolver {
       task.taskList = taskList;
       let newTask = await task.save();
       taskList.maxPos += 65535.5;
-      taskList.save();
+      await taskList.save();
+      await pubsub.publish("ACTIVITY", { boardId, message: "Task Created" });
       return newTask;
     }
 
@@ -34,7 +45,8 @@ export class TaskResolver {
     @Arg("toListId", () => Int) toListId: number,
     @Arg("toPos", () => Float) toPos: number,
     @Arg("boardId", () => Int) boardId: number,
-    @Arg("lastUpdated", () => String) lastUpdated: string
+    @Arg("lastUpdated", () => String) lastUpdated: string,
+    @PubSub() pubsub: PubSubEngine
   ): Promise<Boolean> {
     const connection = getConnection();
     const queryRunner = connection.createQueryRunner();
@@ -64,7 +76,7 @@ export class TaskResolver {
           await queryRunner.startTransaction();
           try {
             await queryRunner.manager.save(list);
-            let result = await queryRunner.manager
+            await queryRunner.manager
               .createQueryBuilder()
               .update(Task)
               .set({
@@ -75,9 +87,11 @@ export class TaskResolver {
               .where("id = :taskId", { taskId })
               .execute();
             await queryRunner.manager.save(board);
-            console.log(result);
-
             await queryRunner.commitTransaction();
+            await pubsub.publish("ACTIVITY", {
+              boardId: board.id,
+              message: "Task Moved",
+            });
           } catch (err) {
             await queryRunner.rollbackTransaction();
           } finally {
@@ -95,13 +109,15 @@ export class TaskResolver {
   @Mutation(() => Boolean)
   async deleteTask(
     @Arg("id", () => Int) id: number,
-    @Arg("listId", () => Int) listId: number
+    @Arg("listId", () => Int) listId: number,
+    @Arg("boardId", () => Int) boardId: number,
+    @PubSub() pubsub: PubSubEngine
   ): Promise<Boolean> {
     await Task.delete({
       id,
       listId,
     });
-
+    await pubsub.publish("ACTIVITY", { boardId, message: "Task Deleted" });
     return true;
   }
 }

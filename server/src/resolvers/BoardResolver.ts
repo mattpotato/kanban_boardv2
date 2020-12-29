@@ -1,7 +1,26 @@
 import { MyContext } from "./../types";
 import { Board } from "../entities/Board";
-import { Arg, Ctx, Int, Mutation, Query, Resolver } from "type-graphql";
+import {
+  Arg,
+  Ctx,
+  Field,
+  Int,
+  Mutation,
+  ObjectType,
+  Query,
+  Resolver,
+  Root,
+  Subscription,
+} from "type-graphql";
 
+@ObjectType()
+export class BoardActivity {
+  @Field(() => Int!)
+  boardId: number;
+
+  @Field(() => String)
+  message: string;
+}
 @Resolver()
 export class BoardResolver {
   @Mutation(() => Board)
@@ -33,5 +52,18 @@ export class BoardResolver {
         creatorId: req.session.userId,
       },
     });
+  }
+
+  @Subscription(() => BoardActivity, {
+    topics: "ACTIVITY",
+    filter: ({ args, payload }) => {
+      return args.boardId === payload.boardId;
+    },
+  })
+  onNewActivity(
+    @Arg("boardId", () => Int) _boardId: number,
+    @Root() activity: BoardActivity
+  ) {
+    return activity;
   }
 }

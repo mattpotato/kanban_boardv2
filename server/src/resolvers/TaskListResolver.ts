@@ -66,7 +66,7 @@ export class TaskListResolver {
     @PubSub() pubsub: PubSubEngine
   ): Promise<Boolean> {
     await TaskList.delete({ id, boardId });
-    pubsub.publish("ACTIVITY", { message: "Task List Deleted" });
+    pubsub.publish("ACTIVITY", { boardId, message: "Task List Deleted" });
     return true;
   }
 

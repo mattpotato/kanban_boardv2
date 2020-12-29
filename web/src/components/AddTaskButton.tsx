@@ -1,4 +1,4 @@
-import { Flex, FormControl, Button, Stack, Textarea } from "@chakra-ui/react";
+import { Flex, FormControl, Button, Stack, Input } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaPlus } from "react-icons/fa";
@@ -40,7 +40,7 @@ export const AddTaskButton: React.FC<AddTaskButtonProps> = ({ listId }) => {
       <FormControl>
         {show ? (
           <Stack>
-            <Textarea
+            <Input
               autoFocus={show}
               type="text"
               placeholder="Enter Task Name..."
@@ -49,21 +49,11 @@ export const AddTaskButton: React.FC<AddTaskButtonProps> = ({ listId }) => {
               onBlur={handleSubmit(onSubmit)}
               width="300px"
               minHeight="50px"
-              resize="none"
               borderColor="rgb(255, 255, 255)"
               background="rgba(138, 148, 145, 0.1)"
               marginLeft="10px"
               padding="10px"
             />
-            <Button
-              marginLeft="10px"
-              type="submit"
-              mt={4}
-              variant="solid"
-              colorScheme="green"
-            >
-              Add Task
-            </Button>
           </Stack>
         ) : (
           <Button

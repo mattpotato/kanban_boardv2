@@ -6,9 +6,13 @@ import { useCreateTaskMutation } from "../generated/graphql";
 
 interface AddTaskButtonProps {
   listId: number;
+  boardId: number;
 }
 
-export const AddTaskButton: React.FC<AddTaskButtonProps> = ({ listId }) => {
+export const AddTaskButton: React.FC<AddTaskButtonProps> = ({
+  listId,
+  boardId,
+}) => {
   const { register, handleSubmit, reset } = useForm();
   const [createTask] = useCreateTaskMutation();
   const [show, setShow] = useState(false);
@@ -21,6 +25,7 @@ export const AddTaskButton: React.FC<AddTaskButtonProps> = ({ listId }) => {
           variables: {
             taskName,
             listId,
+            boardId,
           },
 
           update: (cache) => {

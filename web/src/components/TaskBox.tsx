@@ -20,10 +20,12 @@ const TaskBox: React.FC<TaskBoxProps> = React.memo(({ data, index }) => {
           <Box
             width="300px"
             borderRadius="3px"
-            borderColor="rgb(255, 255, 255)"
+            borderColor="rgba(255, 255, 255, 0.1)"
+            borderWidth="1px"
             background="rgba(138, 148, 145, 0.1)"
             marginLeft="10px"
             padding="10px"
+            _hover={{ borderColor: "black" }}
           >
             {data.name}
           </Box>

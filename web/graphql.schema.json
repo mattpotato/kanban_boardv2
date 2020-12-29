@@ -829,6 +829,20 @@
             "description": null,
             "args": [
               {
+                "name": "boardId",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              },
+              {
                 "name": "id",
                 "description": null,
                 "type": {
@@ -932,6 +946,20 @@
             "name": "createTask",
             "description": null,
             "args": [
+              {
+                "name": "boardId",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              },
               {
                 "name": "listId",
                 "description": null,
@@ -1064,6 +1092,20 @@
             "name": "deleteTask",
             "description": null,
             "args": [
+              {
+                "name": "boardId",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              },
               {
                 "name": "listId",
                 "description": null,
@@ -1252,6 +1294,37 @@
         "description": null,
         "fields": [
           {
+            "name": "onNewActivity",
+            "description": null,
+            "args": [
+              {
+                "name": "boardId",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "BoardActivity",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "onNewTaskList",
             "description": null,
             "args": [
@@ -1276,6 +1349,49 @@
               "ofType": {
                 "kind": "OBJECT",
                 "name": "TaskList",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "BoardActivity",
+        "description": null,
+        "fields": [
+          {
+            "name": "boardId",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "message",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
                 "ofType": null
               }
             },

@@ -115,6 +115,7 @@ export type MutationCreateTaskListArgs = {
 
 
 export type MutationDeleteTaskListArgs = {
+  boardId: Scalars['Int'];
   id: Scalars['Int'];
 };
 
@@ -128,6 +129,7 @@ export type MutationMoveTaskListArgs = {
 
 
 export type MutationCreateTaskArgs = {
+  boardId: Scalars['Int'];
   listId: Scalars['Int'];
   taskName: Scalars['String'];
 };
@@ -143,6 +145,7 @@ export type MutationMoveTaskArgs = {
 
 
 export type MutationDeleteTaskArgs = {
+  boardId: Scalars['Int'];
   listId: Scalars['Int'];
   id: Scalars['Int'];
 };
@@ -166,7 +169,13 @@ export type LoginInput = {
 
 export type Subscription = {
   __typename?: 'Subscription';
+  onNewActivity: BoardActivity;
   onNewTaskList: TaskList;
+};
+
+
+export type SubscriptionOnNewActivityArgs = {
+  boardId: Scalars['Int'];
 };
 
 
@@ -174,9 +183,29 @@ export type SubscriptionOnNewTaskListArgs = {
   boardId: Scalars['Int'];
 };
 
+export type BoardActivity = {
+  __typename?: 'BoardActivity';
+  boardId: Scalars['Int'];
+  message: Scalars['String'];
+};
+
+export type CreateBoardMutationVariables = Exact<{
+  boardName: Scalars['String'];
+}>;
+
+
+export type CreateBoardMutation = (
+  { __typename?: 'Mutation' }
+  & { createBoard: (
+    { __typename?: 'Board' }
+    & Pick<Board, 'id' | 'name'>
+  ) }
+);
+
 export type CreateTaskMutationVariables = Exact<{
   taskName: Scalars['String'];
   listId: Scalars['Int'];
+  boardId: Scalars['Int'];
 }>;
 
 
@@ -205,6 +234,7 @@ export type CreateTaskListMutation = (
 export type DeleteTaskMutationVariables = Exact<{
   id: Scalars['Int'];
   listId: Scalars['Int'];
+  boardId: Scalars['Int'];
 }>;
 
 
@@ -215,6 +245,7 @@ export type DeleteTaskMutation = (
 
 export type DeleteTaskListMutationVariables = Exact<{
   id: Scalars['Int'];
+  boardId: Scalars['Int'];
 }>;
 
 
@@ -321,6 +352,19 @@ export type MeQuery = (
   )> }
 );
 
+export type OnNewActivitySubscriptionVariables = Exact<{
+  boardId: Scalars['Int'];
+}>;
+
+
+export type OnNewActivitySubscription = (
+  { __typename?: 'Subscription' }
+  & { onNewActivity: (
+    { __typename?: 'BoardActivity' }
+    & Pick<BoardActivity, 'message'>
+  ) }
+);
+
 export type OnNewTaskListSubscriptionVariables = Exact<{
   boardId: Scalars['Int'];
 }>;
@@ -335,9 +379,42 @@ export type OnNewTaskListSubscription = (
 );
 
 
+export const CreateBoardDocument = gql`
+    mutation CreateBoard($boardName: String!) {
+  createBoard(boardName: $boardName) {
+    id
+    name
+  }
+}
+    `;
+export type CreateBoardMutationFn = Apollo.MutationFunction<CreateBoardMutation, CreateBoardMutationVariables>;
+
+/**
+ * __useCreateBoardMutation__
+ *
+ * To run a mutation, you first call `useCreateBoardMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateBoardMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createBoardMutation, { data, loading, error }] = useCreateBoardMutation({
+ *   variables: {
+ *      boardName: // value for 'boardName'
+ *   },
+ * });
+ */
+export function useCreateBoardMutation(baseOptions?: Apollo.MutationHookOptions<CreateBoardMutation, CreateBoardMutationVariables>) {
+        return Apollo.useMutation<CreateBoardMutation, CreateBoardMutationVariables>(CreateBoardDocument, baseOptions);
+      }
+export type CreateBoardMutationHookResult = ReturnType<typeof useCreateBoardMutation>;
+export type CreateBoardMutationResult = Apollo.MutationResult<CreateBoardMutation>;
+export type CreateBoardMutationOptions = Apollo.BaseMutationOptions<CreateBoardMutation, CreateBoardMutationVariables>;
 export const CreateTaskDocument = gql`
-    mutation CreateTask($taskName: String!, $listId: Int!) {
-  createTask(taskName: $taskName, listId: $listId) {
+    mutation CreateTask($taskName: String!, $listId: Int!, $boardId: Int!) {
+  createTask(taskName: $taskName, listId: $listId, boardId: $boardId) {
     id
     name
     listId
@@ -362,6 +439,7 @@ export type CreateTaskMutationFn = Apollo.MutationFunction<CreateTaskMutation, C
  *   variables: {
  *      taskName: // value for 'taskName'
  *      listId: // value for 'listId'
+ *      boardId: // value for 'boardId'
  *   },
  * });
  */
@@ -407,8 +485,8 @@ export type CreateTaskListMutationHookResult = ReturnType<typeof useCreateTaskLi
 export type CreateTaskListMutationResult = Apollo.MutationResult<CreateTaskListMutation>;
 export type CreateTaskListMutationOptions = Apollo.BaseMutationOptions<CreateTaskListMutation, CreateTaskListMutationVariables>;
 export const DeleteTaskDocument = gql`
-    mutation DeleteTask($id: Int!, $listId: Int!) {
-  deleteTask(id: $id, listId: $listId)
+    mutation DeleteTask($id: Int!, $listId: Int!, $boardId: Int!) {
+  deleteTask(id: $id, listId: $listId, boardId: $boardId)
 }
     `;
 export type DeleteTaskMutationFn = Apollo.MutationFunction<DeleteTaskMutation, DeleteTaskMutationVariables>;
@@ -428,6 +506,7 @@ export type DeleteTaskMutationFn = Apollo.MutationFunction<DeleteTaskMutation, D
  *   variables: {
  *      id: // value for 'id'
  *      listId: // value for 'listId'
+ *      boardId: // value for 'boardId'
  *   },
  * });
  */
@@ -438,8 +517,8 @@ export type DeleteTaskMutationHookResult = ReturnType<typeof useDeleteTaskMutati
 export type DeleteTaskMutationResult = Apollo.MutationResult<DeleteTaskMutation>;
 export type DeleteTaskMutationOptions = Apollo.BaseMutationOptions<DeleteTaskMutation, DeleteTaskMutationVariables>;
 export const DeleteTaskListDocument = gql`
-    mutation DeleteTaskList($id: Int!) {
-  deleteTaskList(id: $id)
+    mutation DeleteTaskList($id: Int!, $boardId: Int!) {
+  deleteTaskList(id: $id, boardId: $boardId)
 }
     `;
 export type DeleteTaskListMutationFn = Apollo.MutationFunction<DeleteTaskListMutation, DeleteTaskListMutationVariables>;
@@ -458,6 +537,7 @@ export type DeleteTaskListMutationFn = Apollo.MutationFunction<DeleteTaskListMut
  * const [deleteTaskListMutation, { data, loading, error }] = useDeleteTaskListMutation({
  *   variables: {
  *      id: // value for 'id'
+ *      boardId: // value for 'boardId'
  *   },
  * });
  */
@@ -732,6 +812,35 @@ export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const OnNewActivityDocument = gql`
+    subscription OnNewActivity($boardId: Int!) {
+  onNewActivity(boardId: $boardId) {
+    message
+  }
+}
+    `;
+
+/**
+ * __useOnNewActivitySubscription__
+ *
+ * To run a query within a React component, call `useOnNewActivitySubscription` and pass it any options that fit your needs.
+ * When your component renders, `useOnNewActivitySubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOnNewActivitySubscription({
+ *   variables: {
+ *      boardId: // value for 'boardId'
+ *   },
+ * });
+ */
+export function useOnNewActivitySubscription(baseOptions: Apollo.SubscriptionHookOptions<OnNewActivitySubscription, OnNewActivitySubscriptionVariables>) {
+        return Apollo.useSubscription<OnNewActivitySubscription, OnNewActivitySubscriptionVariables>(OnNewActivityDocument, baseOptions);
+      }
+export type OnNewActivitySubscriptionHookResult = ReturnType<typeof useOnNewActivitySubscription>;
+export type OnNewActivitySubscriptionResult = Apollo.SubscriptionResult<OnNewActivitySubscription>;
 export const OnNewTaskListDocument = gql`
     subscription OnNewTaskList($boardId: Int!) {
   onNewTaskList(boardId: $boardId) {

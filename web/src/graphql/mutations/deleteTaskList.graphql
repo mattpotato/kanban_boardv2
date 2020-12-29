@@ -1,3 +1,3 @@
-mutation DeleteTaskList($id: Int!) {
-  deleteTaskList(id: $id)
+mutation DeleteTaskList($id: Int!, $boardId: Int!) {
+  deleteTaskList(id: $id, boardId: $boardId)
 }

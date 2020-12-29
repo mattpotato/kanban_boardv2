@@ -1,5 +1,5 @@
-mutation CreateTask($taskName: String!, $listId: Int!) {
-  createTask(taskName: $taskName, listId: $listId) {
+mutation CreateTask($taskName: String!, $listId: Int!, $boardId: Int!) {
+  createTask(taskName: $taskName, listId: $listId, boardId: $boardId) {
     id
     name
     listId

@@ -1,0 +1,6 @@
+mutation CreateBoard($boardName: String!) {
+  createBoard(boardName: $boardName) {
+    id
+    name
+  }
+}

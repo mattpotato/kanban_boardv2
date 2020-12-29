@@ -45,6 +45,7 @@ export const AddListButton: React.FC<AddListButtonProps> = ({ boardId }) => {
             name="listName"
             onBlur={handleSubmit(onSubmit)}
             ref={register}
+            minWidth="300px"
           />
         ) : (
           <Button

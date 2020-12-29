@@ -31,7 +31,7 @@ const ListBox: React.FC<ListBoxProps> = React.memo(({ col, data }) => {
             <Box marginTop="10px" marginLeft="25px">
               {data.name}
             </Box>
-            <Menu>
+            <Menu placement="bottom-end">
               <MenuButton
                 as={IconButton}
                 variant="ghost"
@@ -47,6 +47,7 @@ const ListBox: React.FC<ListBoxProps> = React.memo(({ col, data }) => {
                     deleteList({
                       variables: {
                         id: data.id,
+                        boardId: data.boardId,
                       },
                       update: (cache) => {
                         cache.evict({ fieldName: "getTaskLists" });
@@ -67,7 +68,7 @@ const ListBox: React.FC<ListBoxProps> = React.memo(({ col, data }) => {
                     <TaskBox key={task.id} data={task} index={index} />
                   ))}
                   {provided.placeholder}
-                  <AddTaskButton listId={data.id} />
+                  <AddTaskButton listId={data.id} boardId={data.boardId} />
                 </Stack>
               </div>
             )}

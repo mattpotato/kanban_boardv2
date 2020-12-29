@@ -1,12 +1,17 @@
-import { Box, Heading } from "@chakra-ui/react";
+import { Button, Heading } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { BoardList } from "../components/BoardList";
 import Layout from "../components/Layout";
-import { Board, useGetBoardsQuery } from "../generated/graphql";
+import {
+  Board,
+  useCreateBoardMutation,
+  useGetBoardsQuery,
+} from "../generated/graphql";
 
 const Dashboard: React.FC = () => {
   const { data } = useGetBoardsQuery();
   const [boards, setBoards] = useState<Board[]>([]);
+  const [createBoard] = useCreateBoardMutation();
 
   useEffect(() => {
     if (data?.getBoards) {
@@ -18,10 +23,23 @@ const Dashboard: React.FC = () => {
       <Heading as="h2" size="xl">
         Boards
       </Heading>
-
+      <Button
+        variant="solid"
+        colorScheme="green"
+        onClick={() =>
+          createBoard({
+            variables: {
+              boardName: "Untitled Board",
+            },
+            update: (cache) => {
+              cache.evict({ fieldName: "getBoards" });
+            },
+          })
+        }
+      >
+        Create New
+      </Button>
       <BoardList boards={boards} />
-
-      <Box>Create a board</Box>
     </Layout>
   );
 };

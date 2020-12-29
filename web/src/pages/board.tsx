@@ -11,7 +11,7 @@ import {
   useGetTaskListsQuery,
   useMoveTaskListMutation,
   useMoveTaskMutation,
-  useOnNewTaskListSubscription,
+  useOnNewActivitySubscription,
 } from "../generated/graphql";
 import { gql, useApolloClient } from "@apollo/client";
 
@@ -65,7 +65,7 @@ const Board: React.FC<RouteComponentProps<BoardRouteInfo>> = (props) => {
     },
   });
 
-  const { data: subData } = useOnNewTaskListSubscription({
+  const { data: activityData } = useOnNewActivitySubscription({
     variables: {
       boardId: parseInt(props.match.params.boardId),
     },
@@ -308,11 +308,11 @@ const Board: React.FC<RouteComponentProps<BoardRouteInfo>> = (props) => {
   };
 
   useEffect(() => {
-    if (subData?.onNewTaskList) {
+    if (activityData?.onNewActivity) {
       client.cache.evict({ fieldName: "getBoardById" });
       client.cache.evict({ fieldName: "getTaskLists" });
     }
-  }, [subData, client]);
+  }, [activityData, client]);
 
   useEffect(() => {
     if (listsData?.getTaskLists) {
@@ -323,7 +323,6 @@ const Board: React.FC<RouteComponentProps<BoardRouteInfo>> = (props) => {
   return (
     <Layout>
       <Box>Board</Box>
-      {subData?.onNewTaskList ? <Box>{subData.onNewTaskList.name}</Box> : null}
       {data?.getBoardById.name ? <Box>{data.getBoardById.name}</Box> : null}
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="board" direction="horizontal" type="COLUMN">

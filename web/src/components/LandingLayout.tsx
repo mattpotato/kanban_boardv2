@@ -7,14 +7,16 @@ const LandingLayout: React.FC = ({ children }) => {
   return (
     <Flex flexDirection="column" height="100vh">
       <Flex padding="20px" width="100vw" justifyContent="space-between">
-        <Box>Kanban</Box>
+        <ChakraLink as={Link} to="/">
+          Kanban
+        </ChakraLink>
 
         <Flex alignSelf="flex-end">
           <ColorModeSwitcher />
           <ChakraLink as={Link} to="/login">
             <Button variant="ghost">Login</Button>
           </ChakraLink>
-          <ChakraLink as={Link} to="#">
+          <ChakraLink as={Link} to="/register">
             <Button variant="solid" colorScheme="green">
               Create account
             </Button>

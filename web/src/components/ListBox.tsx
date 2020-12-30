@@ -65,7 +65,12 @@ const ListBox: React.FC<ListBoxProps> = React.memo(({ col, data }) => {
               <div ref={provided.innerRef} {...provided.droppableProps}>
                 <Stack width="300px" margin="10px">
                   {data.tasks.map((task, index) => (
-                    <TaskBox key={task.id} data={task} index={index} />
+                    <TaskBox
+                      key={task.id}
+                      data={task}
+                      index={index}
+                      boardId={data.boardId}
+                    />
                   ))}
                   {provided.placeholder}
                   <AddTaskButton listId={data.id} boardId={data.boardId} />

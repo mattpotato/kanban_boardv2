@@ -5,12 +5,12 @@ import {
   Input,
   Button,
   Text,
-  Box,
+  Link as ChakraLink,
 } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useHistory } from "react-router-dom";
-import { ColorModeSwitcher } from "../components/ColorModeSwitcher";
+import { useHistory, Link } from "react-router-dom";
+import LandingLayout from "../components/LandingLayout";
 import { LoginInput, useLoginMutation } from "../generated/graphql";
 
 const Login = () => {
@@ -33,42 +33,47 @@ const Login = () => {
   }, [loginData, history]);
 
   return (
-    <div>
-      <ColorModeSwitcher />
-      <Box>hello {loginData?.login.user?.email}</Box>
+    <LandingLayout>
+      <Flex width="100%" justifyContent="center">
+        <Flex
+          as="form"
+          onSubmit={handleSubmit(onSubmit)}
+          flexDirection="column"
+          width="sm"
+          justifyContent="center"
+        >
+          <FormControl id="email">
+            <FormLabel htmlFor="email">Email</FormLabel>
+            <Input
+              ref={register}
+              name="email"
+              type="email"
+              placeholder="Enter your email"
+            />
+          </FormControl>
+          <FormControl id="password">
+            <FormLabel htmlFor="password">Password</FormLabel>
+            <Input
+              ref={register}
+              name="password"
+              type="password"
+              placeholder="Enter your password"
+            />
+          </FormControl>
+          <Button variant="solid" colorScheme="green" type="submit">
+            Login
+          </Button>
 
-      <Flex
-        as="form"
-        onSubmit={handleSubmit(onSubmit)}
-        flexDirection="column"
-        width="sm"
-        justifyContent="center"
-      >
-        <FormControl id="email">
-          <FormLabel htmlFor="email">Email</FormLabel>
-          <Input
-            ref={register}
-            name="email"
-            type="email"
-            placeholder="Enter your email"
-          />
-        </FormControl>
-        <FormControl id="password">
-          <FormLabel htmlFor="password">Password</FormLabel>
-          <Input
-            ref={register}
-            name="password"
-            type="password"
-            placeholder="Enter your password"
-          />
-        </FormControl>
-        <Button variant="solid" colorScheme="green" type="submit">
-          Login
-        </Button>
-
-        <Text>Or Continue with: </Text>
+          <Text>
+            {" "}
+            Don't have an account?{" "}
+            <ChakraLink as={Link} to="/register">
+              Register
+            </ChakraLink>
+          </Text>
+        </Flex>
       </Flex>
-    </div>
+    </LandingLayout>
   );
 };
 

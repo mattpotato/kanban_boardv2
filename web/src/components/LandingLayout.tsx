@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Button, Flex, Link as ChakraLink } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
+import { ColorModeSwitcher } from "./ColorModeSwitcher";
 
 const LandingLayout: React.FC = ({ children }) => {
   return (
@@ -9,6 +10,7 @@ const LandingLayout: React.FC = ({ children }) => {
         <Box>Kanban</Box>
 
         <Flex alignSelf="flex-end">
+          <ColorModeSwitcher />
           <ChakraLink as={Link} to="/login">
             <Button variant="ghost">Login</Button>
           </ChakraLink>

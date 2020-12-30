@@ -90,7 +90,8 @@ export class UserResolver {
   @Mutation(() => UserResponse)
   async register(
     @Arg("email", () => String) email: string,
-    @Arg("password", () => String) password: string
+    @Arg("password", () => String) password: string,
+    @Ctx() { req }: MyContext
   ): Promise<UserResponse> {
     const hashedPassword = await argon2.hash(password);
     let user;
@@ -112,6 +113,8 @@ export class UserResolver {
         };
       }
     }
+
+    req.session.userId = user.id;
 
     return { user };
   }

@@ -7,7 +7,7 @@ import {
   Text,
   Link as ChakraLink,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useHistory, Link } from "react-router-dom";
 import LandingLayout from "../components/LandingLayout";
@@ -31,6 +31,10 @@ const Register = () => {
       },
     });
   };
+
+  useEffect(() => {
+    document.title = "Register";
+  }, []);
 
   return (
     <LandingLayout>

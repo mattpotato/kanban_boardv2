@@ -32,6 +32,10 @@ const Login = () => {
     }
   }, [loginData, history]);
 
+  useEffect(() => {
+    document.title = "Login";
+  }, []);
+
   return (
     <LandingLayout>
       <Flex width="100%" justifyContent="center">

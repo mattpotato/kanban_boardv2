@@ -18,6 +18,10 @@ const Dashboard: React.FC = () => {
       setBoards(data.getBoards as Board[]);
     }
   }, [data]);
+
+  useEffect(() => {
+    document.title = "Dashboard";
+  }, []);
   return (
     <Layout>
       <Heading as="h2" size="xl">

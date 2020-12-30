@@ -1,4 +1,4 @@
-import { Flex, FormControl, Box, Input, Button } from "@chakra-ui/react";
+import { Flex, FormControl, Input, Button } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useCreateTaskListMutation } from "../generated/graphql";

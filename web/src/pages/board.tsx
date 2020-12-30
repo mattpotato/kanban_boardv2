@@ -13,7 +13,7 @@ import {
   useMoveTaskMutation,
   useOnNewActivitySubscription,
 } from "../generated/graphql";
-import { gql, useApolloClient } from "@apollo/client";
+import { useApolloClient } from "@apollo/client";
 
 interface BoardRouteInfo {
   boardId: string;

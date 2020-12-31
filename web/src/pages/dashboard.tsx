@@ -1,5 +1,5 @@
 import { Button, Heading } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { BoardList } from "../components/BoardList";
 import Layout from "../components/Layout";
 import {
@@ -10,18 +10,12 @@ import {
 
 const Dashboard: React.FC = () => {
   const { data } = useGetBoardsQuery();
-  const [boards, setBoards] = useState<Board[]>([]);
   const [createBoard] = useCreateBoardMutation();
-
-  useEffect(() => {
-    if (data?.getBoards) {
-      setBoards(data.getBoards as Board[]);
-    }
-  }, [data]);
 
   useEffect(() => {
     document.title = "Dashboard";
   }, []);
+
   return (
     <Layout>
       <Heading as="h2" size="xl">
@@ -43,7 +37,7 @@ const Dashboard: React.FC = () => {
       >
         Create New
       </Button>
-      <BoardList boards={boards} />
+      {data?.getBoards && <BoardList boards={data?.getBoards as Board[]} />}
     </Layout>
   );
 };

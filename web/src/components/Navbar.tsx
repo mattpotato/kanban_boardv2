@@ -1,7 +1,7 @@
 import { Button, Flex } from "@chakra-ui/react";
 import React from "react";
 import { ColorModeSwitcher } from "./ColorModeSwitcher";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Link as ChakraLink } from "@chakra-ui/react";
 import { useLogoutMutation } from "../generated/graphql";
 

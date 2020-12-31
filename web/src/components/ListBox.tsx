@@ -9,6 +9,7 @@ import {
   MenuList,
   Stack,
   Text,
+  Badge,
 } from "@chakra-ui/react";
 import React from "react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
@@ -31,7 +32,9 @@ const ListBox: React.FC<ListBoxProps> = React.memo(({ col, data }) => {
           <Flex justifyContent="space-between" {...provided.dragHandleProps}>
             <Box marginTop="10px" marginLeft="25px">
               <HStack>
-                <Text>{data.name}</Text>
+                <Badge variant="solid" textTransform="none">
+                  <Text>{data.name}</Text>
+                </Badge>
                 <Text>{data.tasks.length}</Text>
               </HStack>
             </Box>

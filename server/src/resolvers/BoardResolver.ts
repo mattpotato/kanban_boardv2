@@ -34,6 +34,27 @@ export class BoardResolver {
     }).save();
   }
 
+  @Mutation(() => Board)
+  async changeBoardName(
+    @Ctx() { req }: MyContext,
+    @Arg("id", () => Int) id: number,
+    @Arg("name", () => String) name: string
+  ) {
+    let board = await Board.findOne({
+      where: {
+        id,
+        creatorId: req.session.userId,
+      },
+    });
+
+    if (board) {
+      board.name = name;
+      await board.save();
+    }
+
+    return board;
+  }
+
   @Query(() => Board)
   async getBoardById(
     @Arg("boardId", () => Int) boardId: number

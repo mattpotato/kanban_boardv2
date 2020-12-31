@@ -84,6 +84,7 @@ export type Mutation = {
   register: UserResponse;
   logout: Scalars['Boolean'];
   createBoard: Board;
+  changeBoardName: Board;
   createTaskList: TaskList;
   deleteTaskList: Scalars['Boolean'];
   moveTaskList: Scalars['Boolean'];
@@ -106,6 +107,12 @@ export type MutationRegisterArgs = {
 
 export type MutationCreateBoardArgs = {
   boardName: Scalars['String'];
+};
+
+
+export type MutationChangeBoardNameArgs = {
+  name: Scalars['String'];
+  id: Scalars['Int'];
 };
 
 
@@ -189,6 +196,20 @@ export type BoardActivity = {
   boardId: Scalars['Int'];
   message: Scalars['String'];
 };
+
+export type ChangeBoardNameMutationVariables = Exact<{
+  id: Scalars['Int'];
+  name: Scalars['String'];
+}>;
+
+
+export type ChangeBoardNameMutation = (
+  { __typename?: 'Mutation' }
+  & { changeBoardName: (
+    { __typename?: 'Board' }
+    & Pick<Board, 'id' | 'name'>
+  ) }
+);
 
 export type CreateBoardMutationVariables = Exact<{
   boardName: Scalars['String'];
@@ -408,6 +429,40 @@ export type OnNewTaskListSubscription = (
 );
 
 
+export const ChangeBoardNameDocument = gql`
+    mutation changeBoardName($id: Int!, $name: String!) {
+  changeBoardName(id: $id, name: $name) {
+    id
+    name
+  }
+}
+    `;
+export type ChangeBoardNameMutationFn = Apollo.MutationFunction<ChangeBoardNameMutation, ChangeBoardNameMutationVariables>;
+
+/**
+ * __useChangeBoardNameMutation__
+ *
+ * To run a mutation, you first call `useChangeBoardNameMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useChangeBoardNameMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [changeBoardNameMutation, { data, loading, error }] = useChangeBoardNameMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      name: // value for 'name'
+ *   },
+ * });
+ */
+export function useChangeBoardNameMutation(baseOptions?: Apollo.MutationHookOptions<ChangeBoardNameMutation, ChangeBoardNameMutationVariables>) {
+        return Apollo.useMutation<ChangeBoardNameMutation, ChangeBoardNameMutationVariables>(ChangeBoardNameDocument, baseOptions);
+      }
+export type ChangeBoardNameMutationHookResult = ReturnType<typeof useChangeBoardNameMutation>;
+export type ChangeBoardNameMutationResult = Apollo.MutationResult<ChangeBoardNameMutation>;
+export type ChangeBoardNameMutationOptions = Apollo.BaseMutationOptions<ChangeBoardNameMutation, ChangeBoardNameMutationVariables>;
 export const CreateBoardDocument = gql`
     mutation CreateBoard($boardName: String!) {
   createBoard(boardName: $boardName) {

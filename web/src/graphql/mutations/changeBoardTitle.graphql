@@ -1,0 +1,6 @@
+mutation changeBoardName($id: Int!, $name: String!) {
+  changeBoardName(id: $id, name: $name) {
+    id
+    name
+  }
+}

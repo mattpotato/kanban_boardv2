@@ -1,4 +1,9 @@
-import { Box, Flex } from "@chakra-ui/react";
+import {
+  Editable,
+  EditableInput,
+  EditablePreview,
+  Flex,
+} from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { RouteComponentProps, useHistory } from "react-router-dom";
 import { AddListButton } from "../components/AddListButton";
@@ -7,6 +12,7 @@ import ListBox from "../components/ListBox";
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import {
   TaskList,
+  useChangeBoardNameMutation,
   useGetBoardByIdQuery,
   useGetTaskListsQuery,
   useMoveTaskListMutation,
@@ -23,6 +29,7 @@ const Board: React.FC<RouteComponentProps<BoardRouteInfo>> = (props) => {
   const history = useHistory();
   const client = useApolloClient();
   const [lists, setLists] = useState<TaskList[] | []>([]);
+  const [changeBoardName] = useChangeBoardNameMutation();
   const [moveList] = useMoveTaskListMutation({
     onError: ({ graphQLErrors, networkError }) => {
       if (graphQLErrors)
@@ -322,8 +329,24 @@ const Board: React.FC<RouteComponentProps<BoardRouteInfo>> = (props) => {
 
   return (
     <Layout>
-      <Box>Board</Box>
-      {data?.getBoardById.name ? <Box>{data.getBoardById.name}</Box> : null}
+      {data?.getBoardById ? (
+        <Editable
+          defaultValue={data.getBoardById.name}
+          onSubmit={(nextValue) => {
+            if (nextValue) {
+              changeBoardName({
+                variables: {
+                  id: data.getBoardById.id,
+                  name: nextValue,
+                },
+              });
+            }
+          }}
+        >
+          <EditablePreview />
+          <EditableInput />
+        </Editable>
+      ) : null}
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="board" direction="horizontal" type="COLUMN">
           {(provided) => (

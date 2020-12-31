@@ -1,4 +1,5 @@
 import {
+  Box,
   Editable,
   EditableInput,
   EditablePreview,
@@ -331,6 +332,9 @@ const Board: React.FC<RouteComponentProps<BoardRouteInfo>> = (props) => {
     <Layout>
       {data?.getBoardById ? (
         <Editable
+          width="300px"
+          margin="20px"
+          fontSize="4xl"
           defaultValue={data.getBoardById.name}
           onSubmit={(nextValue) => {
             if (nextValue) {
@@ -343,8 +347,8 @@ const Board: React.FC<RouteComponentProps<BoardRouteInfo>> = (props) => {
             }
           }}
         >
-          <EditablePreview />
-          <EditableInput />
+          <EditablePreview cursor="pointer" />
+          <EditableInput placeholder="Enter Board Name" />
         </Editable>
       ) : null}
       <DragDropContext onDragEnd={onDragEnd}>

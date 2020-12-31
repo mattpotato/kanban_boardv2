@@ -1,12 +1,14 @@
 import {
   Box,
   Flex,
+  HStack,
   IconButton,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
   Stack,
+  Text,
 } from "@chakra-ui/react";
 import React from "react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
@@ -28,7 +30,10 @@ const ListBox: React.FC<ListBoxProps> = React.memo(({ col, data }) => {
         <div ref={provided.innerRef} {...provided.draggableProps}>
           <Flex justifyContent="space-between" {...provided.dragHandleProps}>
             <Box marginTop="10px" marginLeft="25px">
-              {data.name}
+              <HStack>
+                <Text>{data.name}</Text>
+                <Text>{data.tasks.length}</Text>
+              </HStack>
             </Box>
             <Menu placement="bottom-end">
               <MenuButton

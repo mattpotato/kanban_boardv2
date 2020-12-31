@@ -6,6 +6,7 @@ import {
   Button,
   Text,
   Link as ChakraLink,
+  FormErrorMessage,
 } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -14,7 +15,7 @@ import LandingLayout from "../components/LandingLayout";
 import { LoginInput, useRegisterMutation } from "../generated/graphql";
 
 const Register = () => {
-  const { handleSubmit, register } = useForm();
+  const { handleSubmit, register, errors, setError } = useForm();
   const [signup] = useRegisterMutation();
   const history = useHistory();
 
@@ -24,9 +25,14 @@ const Register = () => {
         email: data.email,
         password: data.password,
       },
-      update: (cache, result) => {
+      update: (_cache, result) => {
         if (result.data?.register.user) {
           history.push("/dashboard");
+        }
+        if (result.data?.register.errors) {
+          result.data.register.errors.forEach((error) => {
+            setError(error.field, { message: error.message });
+          });
         }
       },
     });
@@ -46,7 +52,7 @@ const Register = () => {
           width="sm"
           justifyContent="center"
         >
-          <FormControl id="email">
+          <FormControl id="email" isInvalid={errors.email}>
             <FormLabel htmlFor="email">Email</FormLabel>
             <Input
               ref={register}
@@ -54,6 +60,9 @@ const Register = () => {
               type="email"
               placeholder="Enter your email"
             />
+            {errors.email && (
+              <FormErrorMessage>{errors.email.message}</FormErrorMessage>
+            )}
           </FormControl>
           <FormControl id="password">
             <FormLabel htmlFor="password">Password</FormLabel>

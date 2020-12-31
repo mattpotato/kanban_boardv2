@@ -6,6 +6,7 @@ import {
   Button,
   Text,
   Link as ChakraLink,
+  FormErrorMessage,
 } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -14,8 +15,8 @@ import LandingLayout from "../components/LandingLayout";
 import { LoginInput, useLoginMutation } from "../generated/graphql";
 
 const Login = () => {
-  const { handleSubmit, register } = useForm();
-  const [login, { data: loginData }] = useLoginMutation();
+  const { handleSubmit, register, errors, setError } = useForm();
+  const [login] = useLoginMutation();
   const history = useHistory();
 
   const onSubmit = (data: LoginInput) => {
@@ -23,14 +24,18 @@ const Login = () => {
       variables: {
         options: data,
       },
+      update: (_cache, result) => {
+        if (result.data?.login.user) {
+          history.push("/dashboard");
+        }
+        if (result.data?.login.errors) {
+          result.data.login.errors.forEach((error) => {
+            setError(error.field, { message: error.message });
+          });
+        }
+      },
     });
   };
-
-  useEffect(() => {
-    if (loginData?.login.user) {
-      history.push("/dashboard");
-    }
-  }, [loginData, history]);
 
   useEffect(() => {
     document.title = "Login";
@@ -46,7 +51,7 @@ const Login = () => {
           width="sm"
           justifyContent="center"
         >
-          <FormControl id="email">
+          <FormControl id="email" isInvalid={errors.email}>
             <FormLabel htmlFor="email">Email</FormLabel>
             <Input
               ref={register}
@@ -54,8 +59,11 @@ const Login = () => {
               type="email"
               placeholder="Enter your email"
             />
+            {errors.email && (
+              <FormErrorMessage>{errors.email.message}</FormErrorMessage>
+            )}
           </FormControl>
-          <FormControl id="password">
+          <FormControl id="password" isInvalid={errors.password}>
             <FormLabel htmlFor="password">Password</FormLabel>
             <Input
               ref={register}
@@ -63,6 +71,9 @@ const Login = () => {
               type="password"
               placeholder="Enter your password"
             />
+            {errors.password && (
+              <FormErrorMessage>{errors.password.message}</FormErrorMessage>
+            )}
           </FormControl>
           <Button variant="solid" colorScheme="green" type="submit">
             Login

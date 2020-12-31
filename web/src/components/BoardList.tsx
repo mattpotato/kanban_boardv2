@@ -11,7 +11,7 @@ export const BoardList: React.FC<BoardListProps> = ({ boards }) => {
   const history = useHistory();
   return (
     <Box>
-      <Table variant="striped" colorScheme="teal">
+      <Table variant="striped" colorScheme="green">
         <Thead>
           <Tr>
             <Th>Board Name</Th>
@@ -22,6 +22,7 @@ export const BoardList: React.FC<BoardListProps> = ({ boards }) => {
         <Tbody>
           {boards.map((board) => (
             <Tr
+              key={board.id}
               onClick={() => history.push(`/board/${board.id}`)}
               cursor="pointer"
             >

@@ -5,6 +5,7 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  Text,
 } from "@chakra-ui/react";
 import React from "react";
 import { Draggable } from "react-beautiful-dnd";
@@ -40,7 +41,7 @@ const TaskBox: React.FC<TaskBoxProps> = React.memo(
               padding="10px"
               _hover={{ borderColor: "black" }}
             >
-              {data.name}
+              <Text as="b">{data.name}</Text>
               <Menu placement="bottom-end">
                 <MenuButton
                   as={IconButton}

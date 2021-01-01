@@ -10,10 +10,17 @@ import {
   Stack,
   Text,
   Badge,
+  Editable,
+  EditableInput,
+  EditablePreview,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
-import { TaskList, useDeleteTaskListMutation } from "../generated/graphql";
+import {
+  TaskList,
+  useDeleteTaskListMutation,
+  useRenameTaskListMutation,
+} from "../generated/graphql";
 import { AddTaskButton } from "./AddTaskButton";
 import TaskBox from "./TaskBox";
 import { BsThreeDots } from "react-icons/bs";
@@ -24,6 +31,8 @@ interface ListBoxProps {
 
 const ListBox: React.FC<ListBoxProps> = React.memo(({ col, data }) => {
   const [deleteList] = useDeleteTaskListMutation();
+  const [renameList] = useRenameTaskListMutation();
+  const [name, setName] = useState(data.name);
 
   return (
     <Draggable draggableId={"l" + data.id} index={col}>
@@ -32,9 +41,36 @@ const ListBox: React.FC<ListBoxProps> = React.memo(({ col, data }) => {
           <Flex justifyContent="space-between" {...provided.dragHandleProps}>
             <Box marginTop="10px" marginLeft="25px">
               <HStack>
-                <Badge variant="solid" textTransform="none">
-                  <Text>{data.name}</Text>
-                </Badge>
+                <Editable
+                  defaultValue={name}
+                  onSubmit={(nextValue) => {
+                    if (nextValue) {
+                      renameList({
+                        variables: {
+                          id: data.id,
+                          name: nextValue,
+                        },
+                      });
+                      setName(nextValue);
+                    }
+                  }}
+                >
+                  {(props) => (
+                    <>
+                      <Badge
+                        as={EditablePreview}
+                        variant="solid"
+                        textTransform="none"
+                        maxWidth="200px"
+                        cursor="pointer"
+                        onClick={props.onEdit}
+                      >
+                        <Text>{name}</Text>
+                      </Badge>
+                      <EditableInput placeholder="Enter Board Name" />
+                    </>
+                  )}
+                </Editable>
                 <Text>{data.tasks.length}</Text>
               </HStack>
             </Box>

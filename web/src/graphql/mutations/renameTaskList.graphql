@@ -1,0 +1,6 @@
+mutation RenameTaskList($id: Int!, $name: String!) {
+  renameTaskList(id: $id, name: $name) {
+    id
+    name
+  }
+}

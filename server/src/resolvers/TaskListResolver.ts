@@ -70,6 +70,20 @@ export class TaskListResolver {
     return true;
   }
 
+  @Mutation(() => TaskList)
+  async renameTaskList(
+    @Arg("id", () => Int) id: number,
+    @Arg("name", () => String) name: string
+  ) {
+    let taskList = await TaskList.findOne({ id });
+    if (taskList) {
+      taskList.name = name;
+      taskList = await taskList.save();
+    }
+
+    return taskList;
+  }
+
   @Mutation(() => Boolean)
   async moveTaskList(
     @Arg("id", () => Int) id: number,

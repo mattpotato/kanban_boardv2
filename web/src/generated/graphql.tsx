@@ -87,6 +87,7 @@ export type Mutation = {
   changeBoardName: Board;
   createTaskList: TaskList;
   deleteTaskList: Scalars['Boolean'];
+  renameTaskList: TaskList;
   moveTaskList: Scalars['Boolean'];
   createTask: Task;
   moveTask: Scalars['Boolean'];
@@ -124,6 +125,12 @@ export type MutationCreateTaskListArgs = {
 
 export type MutationDeleteTaskListArgs = {
   boardId: Scalars['Int'];
+  id: Scalars['Int'];
+};
+
+
+export type MutationRenameTaskListArgs = {
+  name: Scalars['String'];
   id: Scalars['Int'];
 };
 
@@ -347,6 +354,20 @@ export type RegisterMutation = (
       { __typename?: 'FieldError' }
       & Pick<FieldError, 'field' | 'message'>
     )>> }
+  ) }
+);
+
+export type RenameTaskListMutationVariables = Exact<{
+  id: Scalars['Int'];
+  name: Scalars['String'];
+}>;
+
+
+export type RenameTaskListMutation = (
+  { __typename?: 'Mutation' }
+  & { renameTaskList: (
+    { __typename?: 'TaskList' }
+    & Pick<TaskList, 'id' | 'name'>
   ) }
 );
 
@@ -819,6 +840,40 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const RenameTaskListDocument = gql`
+    mutation RenameTaskList($id: Int!, $name: String!) {
+  renameTaskList(id: $id, name: $name) {
+    id
+    name
+  }
+}
+    `;
+export type RenameTaskListMutationFn = Apollo.MutationFunction<RenameTaskListMutation, RenameTaskListMutationVariables>;
+
+/**
+ * __useRenameTaskListMutation__
+ *
+ * To run a mutation, you first call `useRenameTaskListMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRenameTaskListMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [renameTaskListMutation, { data, loading, error }] = useRenameTaskListMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      name: // value for 'name'
+ *   },
+ * });
+ */
+export function useRenameTaskListMutation(baseOptions?: Apollo.MutationHookOptions<RenameTaskListMutation, RenameTaskListMutationVariables>) {
+        return Apollo.useMutation<RenameTaskListMutation, RenameTaskListMutationVariables>(RenameTaskListDocument, baseOptions);
+      }
+export type RenameTaskListMutationHookResult = ReturnType<typeof useRenameTaskListMutation>;
+export type RenameTaskListMutationResult = Apollo.MutationResult<RenameTaskListMutation>;
+export type RenameTaskListMutationOptions = Apollo.BaseMutationOptions<RenameTaskListMutation, RenameTaskListMutationVariables>;
 export const GetBoardByIdDocument = gql`
     query GetBoardById($boardId: Int!) {
   getBoardById(boardId: $boardId) {

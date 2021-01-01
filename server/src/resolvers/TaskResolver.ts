@@ -120,4 +120,18 @@ export class TaskResolver {
     await pubsub.publish("ACTIVITY", { boardId, message: "Task Deleted" });
     return true;
   }
+
+  @Mutation(() => Task)
+  async renameTask(
+    @Arg("id", () => Int) id: number,
+    @Arg("name", () => String) name: string
+  ) {
+    let task = await Task.findOne({ id });
+    if (task) {
+      task.name = name;
+      task = await task.save();
+    }
+
+    return task;
+  }
 }

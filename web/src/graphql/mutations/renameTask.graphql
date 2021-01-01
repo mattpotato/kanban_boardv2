@@ -1,0 +1,6 @@
+mutation RenameTask($id: Int!, $name: String!) {
+  renameTask(id: $id, name: $name) {
+    id
+    name
+  }
+}

@@ -1,5 +1,4 @@
 import {
-  Box,
   Editable,
   EditableInput,
   EditablePreview,
@@ -15,7 +14,6 @@ import {
   TaskList,
   useChangeBoardNameMutation,
   useGetBoardByIdQuery,
-  useGetTaskListsQuery,
   useMoveTaskListMutation,
   useMoveTaskMutation,
   useOnNewActivitySubscription,
@@ -64,12 +62,6 @@ const Board: React.FC<RouteComponentProps<BoardRouteInfo>> = (props) => {
       if (error) {
         history.push("/dashboard");
       }
-    },
-  });
-
-  const { data: listsData } = useGetTaskListsQuery({
-    variables: {
-      boardId: parseInt(props.match.params.boardId),
     },
   });
 
@@ -318,15 +310,15 @@ const Board: React.FC<RouteComponentProps<BoardRouteInfo>> = (props) => {
   useEffect(() => {
     if (activityData?.onNewActivity) {
       client.cache.evict({ fieldName: "getBoardById" });
-      client.cache.evict({ fieldName: "getTaskLists" });
     }
   }, [activityData, client]);
 
   useEffect(() => {
-    if (listsData?.getTaskLists) {
-      setLists(listsData.getTaskLists as TaskList[]);
+    if (data?.getBoardById.taskLists) {
+      setLists(data.getBoardById.taskLists as any);
+      document.title = data.getBoardById.name;
     }
-  }, [listsData]);
+  }, [data]);
 
   return (
     <Layout>

@@ -12,6 +12,7 @@ import {
   Root,
   Subscription,
 } from "type-graphql";
+import { getConnection } from "typeorm";
 
 @ObjectType()
 export class BoardActivity {
@@ -57,13 +58,29 @@ export class BoardResolver {
 
   @Query(() => Board)
   async getBoardById(
-    @Arg("boardId", () => Int) boardId: number
+    @Arg("boardId", () => Int) boardId: number,
+    @Ctx() { req }: MyContext
   ): Promise<Board | undefined> {
-    return Board.findOne({
-      where: {
-        id: boardId,
-      },
-    });
+    console.time("b");
+    let board = await getConnection()
+      .createQueryBuilder()
+      .select("board")
+      .from(Board, "board")
+      .where("board.id = :id", { id: boardId })
+      .andWhere("board.creatorId = :creatorId", {
+        creatorId: req.session.userId,
+      })
+      .leftJoinAndSelect("board.taskLists", "taskLists")
+      .leftJoinAndSelect("taskLists.tasks", "tasks")
+      .addOrderBy("taskLists.pos", "ASC")
+      .addOrderBy("tasks.pos", "ASC")
+      .getOne();
+
+    console.timeEnd("b");
+    // console.log(board);
+    // console.log(board?.taskLists.)
+
+    return board;
   }
 
   @Query(() => [Board])

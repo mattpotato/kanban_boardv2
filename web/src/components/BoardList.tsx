@@ -2,7 +2,10 @@ import { Box, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import React from "react";
 import { Board } from "../generated/graphql";
 import { useHistory } from "react-router-dom";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 
+dayjs.extend(relativeTime);
 interface BoardListProps {
   boards: Board[];
 }
@@ -27,8 +30,8 @@ export const BoardList: React.FC<BoardListProps> = ({ boards }) => {
               cursor="pointer"
             >
               <Td>{board.name}</Td>
-              <Td>{board.createdAt}</Td>
-              <Td>{board.updatedAt}</Td>
+              <Td>{dayjs(board.createdAt).format("D MMM YYYY")}</Td>
+              <Td>{dayjs().to(dayjs(board.updatedAt))}</Td>
             </Tr>
           ))}
         </Tbody>

@@ -5,5 +5,21 @@ query GetBoardById($boardId: Int!) {
     creatorId
     createdAt
     updatedAt
+    taskLists {
+      id
+      boardId
+      name
+      createdAt
+      updatedAt
+      pos
+      minPos
+      maxPos
+      tasks {
+        id
+        listId
+        name
+        pos
+      }
+    }
   }
 }

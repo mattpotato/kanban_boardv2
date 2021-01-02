@@ -402,6 +402,14 @@ export type GetBoardByIdQuery = (
   & { getBoardById: (
     { __typename?: 'Board' }
     & Pick<Board, 'id' | 'name' | 'creatorId' | 'createdAt' | 'updatedAt'>
+    & { taskLists: (
+      { __typename?: 'TaskList' }
+      & Pick<TaskList, 'id' | 'boardId' | 'name' | 'createdAt' | 'updatedAt' | 'pos' | 'minPos' | 'maxPos'>
+      & { tasks: Array<(
+        { __typename?: 'Task' }
+        & Pick<Task, 'id' | 'listId' | 'name' | 'pos'>
+      )> }
+    ) }
   ) }
 );
 
@@ -937,6 +945,22 @@ export const GetBoardByIdDocument = gql`
     creatorId
     createdAt
     updatedAt
+    taskLists {
+      id
+      boardId
+      name
+      createdAt
+      updatedAt
+      pos
+      minPos
+      maxPos
+      tasks {
+        id
+        listId
+        name
+        pos
+      }
+    }
   }
 }
     `;

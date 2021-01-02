@@ -1,5 +1,8 @@
 import {
   Box,
+  Editable,
+  EditableInput,
+  EditablePreview,
   IconButton,
   Menu,
   MenuButton,
@@ -7,10 +10,14 @@ import {
   MenuList,
   Text,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import { BsThreeDots } from "react-icons/bs";
-import { Task, useDeleteTaskMutation } from "../generated/graphql";
+import {
+  Task,
+  useDeleteTaskMutation,
+  useRenameTaskMutation,
+} from "../generated/graphql";
 
 interface TaskBoxProps {
   data: Task;
@@ -21,6 +28,8 @@ interface TaskBoxProps {
 const TaskBox: React.FC<TaskBoxProps> = React.memo(
   ({ data, index, boardId }) => {
     const [deleteTask] = useDeleteTaskMutation();
+    const [renameTask] = useRenameTaskMutation();
+    const [name, setName] = useState(data.name);
     return (
       <Draggable draggableId={"t" + data.id} index={index}>
         {(provided) => (
@@ -41,7 +50,34 @@ const TaskBox: React.FC<TaskBoxProps> = React.memo(
               padding="10px"
               _hover={{ borderColor: "black" }}
             >
-              <Text as="b">{data.name}</Text>
+              <Editable
+                defaultValue={data.name}
+                onSubmit={(nextValue) => {
+                  if (nextValue) {
+                    renameTask({
+                      variables: {
+                        id: data.id,
+                        name: nextValue,
+                        boardId,
+                      },
+                    });
+                    setName(nextValue);
+                  }
+                }}
+              >
+                {(props) => (
+                  <>
+                    <Box
+                      as={EditablePreview}
+                      onClick={props.onEdit}
+                      cursor="pointer"
+                    >
+                      <Text as="b">{name}</Text>
+                    </Box>
+                    <EditableInput />
+                  </>
+                )}
+              </Editable>
               <Menu placement="bottom-end">
                 <MenuButton
                   as={IconButton}

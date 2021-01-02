@@ -169,6 +169,7 @@ export type MutationDeleteTaskArgs = {
 
 
 export type MutationRenameTaskArgs = {
+  boardId: Scalars['Int'];
   name: Scalars['String'];
   id: Scalars['Int'];
 };
@@ -368,6 +369,7 @@ export type RegisterMutation = (
 export type RenameTaskMutationVariables = Exact<{
   id: Scalars['Int'];
   name: Scalars['String'];
+  boardId: Scalars['Int'];
 }>;
 
 
@@ -872,8 +874,8 @@ export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
 export const RenameTaskDocument = gql`
-    mutation RenameTask($id: Int!, $name: String!) {
-  renameTask(id: $id, name: $name) {
+    mutation RenameTask($id: Int!, $name: String!, $boardId: Int!) {
+  renameTask(id: $id, name: $name, boardId: $boardId) {
     id
     name
   }
@@ -896,6 +898,7 @@ export type RenameTaskMutationFn = Apollo.MutationFunction<RenameTaskMutation, R
  *   variables: {
  *      id: // value for 'id'
  *      name: // value for 'name'
+ *      boardId: // value for 'boardId'
  *   },
  * });
  */

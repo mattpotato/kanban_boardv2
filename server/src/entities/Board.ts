@@ -30,9 +30,9 @@ export class Board extends BaseEntity {
   @ManyToOne(() => User, (user) => user.boards)
   creator: User;
 
-  @Field(() => TaskList)
+  @Field(() => [TaskList])
   @OneToMany(() => TaskList, (taskList) => taskList.board)
-  taskLists: User;
+  taskLists: TaskList[];
 
   @Field()
   @Column({ type: "double precision", default: 65535.5 })

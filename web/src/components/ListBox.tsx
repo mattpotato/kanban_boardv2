@@ -94,7 +94,7 @@ const ListBox: React.FC<ListBoxProps> = React.memo(({ col, data }) => {
                         boardId: data.boardId,
                       },
                       update: (cache) => {
-                        cache.evict({ fieldName: "getTaskLists" });
+                        cache.evict({ fieldName: "getBoardById" });
                       },
                     });
                   }}

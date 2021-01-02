@@ -113,7 +113,7 @@ const Board: React.FC<RouteComponentProps<BoardRouteInfo>> = (props) => {
           },
 
           update: (cache) => {
-            cache.evict({ fieldName: "getTaskLists" });
+            cache.evict({ fieldName: "getBoardById" });
           },
         });
       }
@@ -198,7 +198,6 @@ const Board: React.FC<RouteComponentProps<BoardRouteInfo>> = (props) => {
           lastUpdated: data!.getBoardById.updatedAt,
         },
         update: (cache) => {
-          cache.evict({ fieldName: "getTaskLists" });
           cache.evict({ fieldName: "getBoardById" });
         },
       });
@@ -265,7 +264,6 @@ const Board: React.FC<RouteComponentProps<BoardRouteInfo>> = (props) => {
           lastUpdated: data!.getBoardById.updatedAt,
         },
         update: (cache) => {
-          cache.evict({ fieldName: "getTaskLists" });
           cache.evict({ fieldName: "getBoardById" });
           // cache.writeFragment({
           //   id: "TaskList:" + start.id,

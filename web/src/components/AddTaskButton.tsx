@@ -29,7 +29,7 @@ export const AddTaskButton: React.FC<AddTaskButtonProps> = ({
           },
 
           update: (cache) => {
-            cache.evict({ fieldName: "getTaskLists" });
+            cache.evict({ fieldName: "getBoardById" });
           },
         });
       } catch (err) {

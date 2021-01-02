@@ -23,7 +23,6 @@ export const AddListButton: React.FC<AddListButtonProps> = ({ boardId }) => {
 
           update: (cache) => {
             cache.evict({ fieldName: "getBoardById" });
-            cache.evict({ fieldName: "getTaskLists" });
           },
         });
       } catch (err) {

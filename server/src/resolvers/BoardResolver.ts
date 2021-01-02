@@ -61,7 +61,6 @@ export class BoardResolver {
     @Arg("boardId", () => Int) boardId: number,
     @Ctx() { req }: MyContext
   ): Promise<Board | undefined> {
-    console.time("b");
     let board = await getConnection()
       .createQueryBuilder()
       .select("board")
@@ -75,10 +74,6 @@ export class BoardResolver {
       .addOrderBy("taskLists.pos", "ASC")
       .addOrderBy("tasks.pos", "ASC")
       .getOne();
-
-    console.timeEnd("b");
-    // console.log(board);
-    // console.log(board?.taskLists.)
 
     return board;
   }

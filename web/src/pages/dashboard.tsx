@@ -1,5 +1,6 @@
-import { Button, Heading } from "@chakra-ui/react";
+import { Button, Heading, HStack } from "@chakra-ui/react";
 import React, { useEffect } from "react";
+import { BsPlus } from "react-icons/bs";
 import { BoardList } from "../components/BoardList";
 import Layout from "../components/Layout";
 import {
@@ -18,25 +19,28 @@ const Dashboard: React.FC = () => {
 
   return (
     <Layout>
-      <Heading as="h2" size="xl">
-        Boards
-      </Heading>
-      <Button
-        variant="solid"
-        colorScheme="green"
-        onClick={() =>
-          createBoard({
-            variables: {
-              boardName: "Untitled Board",
-            },
-            update: (cache) => {
-              cache.evict({ fieldName: "getBoards" });
-            },
-          })
-        }
-      >
-        Create New
-      </Button>
+      <HStack marginLeft="20px" spacing={4}>
+        <Heading as="h2" size="xl">
+          Boards
+        </Heading>
+        <Button
+          leftIcon={<BsPlus />}
+          variant="solid"
+          colorScheme="green"
+          onClick={() =>
+            createBoard({
+              variables: {
+                boardName: "Untitled Board",
+              },
+              update: (cache) => {
+                cache.evict({ fieldName: "getBoards" });
+              },
+            })
+          }
+        >
+          New Board
+        </Button>
+      </HStack>
       {data?.getBoards && <BoardList boards={data?.getBoards as Board[]} />}
     </Layout>
   );

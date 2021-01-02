@@ -65,20 +65,37 @@ export class TaskListResolver {
     @Arg("boardId", () => Int) boardId: number,
     @PubSub() pubsub: PubSubEngine
   ): Promise<Boolean> {
-    await TaskList.delete({ id, boardId });
-    pubsub.publish("ACTIVITY", { boardId, message: "Task List Deleted" });
+    let board = await Board.findOne(boardId);
+    if (board) {
+      await TaskList.delete({ id, boardId });
+      board.updatedAt = new Date();
+      await board.save();
+      pubsub.publish("ACTIVITY", { boardId, message: "Task List Deleted" });
+    }
     return true;
   }
 
   @Mutation(() => TaskList)
   async renameTaskList(
     @Arg("id", () => Int) id: number,
-    @Arg("name", () => String) name: string
+    @Arg("name", () => String) name: string,
+    @Arg("boardId", () => Int) boardId: number,
+    @PubSub() pubsub: PubSubEngine
   ) {
+    let board = await Board.findOne(boardId);
     let taskList = await TaskList.findOne({ id });
-    if (taskList) {
-      taskList.name = name;
-      taskList = await taskList.save();
+    if (board) {
+      if (taskList) {
+        const oldName = taskList.name;
+        taskList.name = name;
+        taskList = await taskList.save();
+        board.updatedAt = new Date();
+        await board.save();
+        pubsub.publish("ACTIVITY", {
+          boardId,
+          message: `Task List '${oldName}' renamed to '${name}'`,
+        });
+      }
     }
 
     return taskList;

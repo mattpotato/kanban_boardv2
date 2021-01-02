@@ -47,7 +47,7 @@ export type Board = {
   name: Scalars['String'];
   creatorId: Scalars['Float'];
   creator: User;
-  taskLists: TaskList;
+  taskLists: Array<TaskList>;
   minPos: Scalars['Float'];
   maxPos: Scalars['Float'];
   createdAt: Scalars['DateTime'];
@@ -131,6 +131,7 @@ export type MutationDeleteTaskListArgs = {
 
 
 export type MutationRenameTaskListArgs = {
+  boardId: Scalars['Int'];
   name: Scalars['String'];
   id: Scalars['Int'];
 };
@@ -381,6 +382,7 @@ export type RenameTaskMutation = (
 export type RenameTaskListMutationVariables = Exact<{
   id: Scalars['Int'];
   name: Scalars['String'];
+  boardId: Scalars['Int'];
 }>;
 
 
@@ -402,14 +404,14 @@ export type GetBoardByIdQuery = (
   & { getBoardById: (
     { __typename?: 'Board' }
     & Pick<Board, 'id' | 'name' | 'creatorId' | 'createdAt' | 'updatedAt'>
-    & { taskLists: (
+    & { taskLists: Array<(
       { __typename?: 'TaskList' }
       & Pick<TaskList, 'id' | 'boardId' | 'name' | 'createdAt' | 'updatedAt' | 'pos' | 'minPos' | 'maxPos'>
       & { tasks: Array<(
         { __typename?: 'Task' }
         & Pick<Task, 'id' | 'listId' | 'name' | 'pos'>
       )> }
-    ) }
+    )> }
   ) }
 );
 
@@ -904,8 +906,8 @@ export type RenameTaskMutationHookResult = ReturnType<typeof useRenameTaskMutati
 export type RenameTaskMutationResult = Apollo.MutationResult<RenameTaskMutation>;
 export type RenameTaskMutationOptions = Apollo.BaseMutationOptions<RenameTaskMutation, RenameTaskMutationVariables>;
 export const RenameTaskListDocument = gql`
-    mutation RenameTaskList($id: Int!, $name: String!) {
-  renameTaskList(id: $id, name: $name) {
+    mutation RenameTaskList($id: Int!, $name: String!, $boardId: Int!) {
+  renameTaskList(id: $id, name: $name, boardId: $boardId) {
     id
     name
   }
@@ -928,6 +930,7 @@ export type RenameTaskListMutationFn = Apollo.MutationFunction<RenameTaskListMut
  *   variables: {
  *      id: // value for 'id'
  *      name: // value for 'name'
+ *      boardId: // value for 'boardId'
  *   },
  * });
  */

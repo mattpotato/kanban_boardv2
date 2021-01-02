@@ -49,6 +49,7 @@ const ListBox: React.FC<ListBoxProps> = React.memo(({ col, data }) => {
                         variables: {
                           id: data.id,
                           name: nextValue,
+                          boardId: data.boardId,
                         },
                       });
                       setName(nextValue);

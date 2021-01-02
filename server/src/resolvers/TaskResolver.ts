@@ -124,12 +124,24 @@ export class TaskResolver {
   @Mutation(() => Task)
   async renameTask(
     @Arg("id", () => Int) id: number,
-    @Arg("name", () => String) name: string
+    @Arg("name", () => String) name: string,
+    @Arg("boardId", () => Int) boardId: number,
+    @PubSub() pubsub: PubSubEngine
   ) {
+    let board = await Board.findOne(boardId);
     let task = await Task.findOne({ id });
-    if (task) {
-      task.name = name;
-      task = await task.save();
+    if (board) {
+      if (task) {
+        const oldName = task.name;
+        task.name = name;
+        task = await task.save();
+        board.updatedAt = new Date();
+        await board.save();
+        await pubsub.publish("ACTIVITY", {
+          boardId,
+          message: `Task '${oldName}' renamed to '${name}'`,
+        });
+      }
     }
 
     return task;

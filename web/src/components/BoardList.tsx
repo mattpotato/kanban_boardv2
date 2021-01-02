@@ -18,8 +18,8 @@ export const BoardList: React.FC<BoardListProps> = ({ boards }) => {
         <Thead>
           <Tr>
             <Th>Board Name</Th>
-            <Th>Created At</Th>
-            <Th>Updated At</Th>
+            <Th>Date Created</Th>
+            <Th>Last Updated</Th>
           </Tr>
         </Thead>
         <Tbody>

@@ -1,6 +1,7 @@
 import { TaskList } from "./../entities/TaskList";
 import { Task } from "./../entities/Task";
 import { Board } from "./../entities/Board";
+import { isAuth } from "../middleware/isAuth";
 import {
   Arg,
   Float,
@@ -9,12 +10,14 @@ import {
   PubSub,
   PubSubEngine,
   Resolver,
+  UseMiddleware,
 } from "type-graphql";
 import { getConnection } from "typeorm";
 
 @Resolver()
 export class TaskResolver {
   @Mutation(() => Task)
+  @UseMiddleware(isAuth)
   async createTask(
     @Arg("taskName", () => String) taskName: string,
     @Arg("listId", () => Int) listId: number,
@@ -40,6 +43,7 @@ export class TaskResolver {
   }
 
   @Mutation(() => Boolean)
+  @UseMiddleware(isAuth)
   async moveTask(
     @Arg("taskId", () => Int) taskId: number,
     @Arg("toListId", () => Int) toListId: number,
@@ -107,6 +111,7 @@ export class TaskResolver {
   }
 
   @Mutation(() => Boolean)
+  @UseMiddleware(isAuth)
   async deleteTask(
     @Arg("id", () => Int) id: number,
     @Arg("listId", () => Int) listId: number,
@@ -122,6 +127,7 @@ export class TaskResolver {
   }
 
   @Mutation(() => Task)
+  @UseMiddleware(isAuth)
   async renameTask(
     @Arg("id", () => Int) id: number,
     @Arg("name", () => String) name: string,

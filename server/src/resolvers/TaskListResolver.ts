@@ -1,5 +1,6 @@
 import { Board } from "../entities/Board";
 import { TaskList } from "../entities/TaskList";
+import { isAuth } from "../middleware/isAuth";
 import {
   Arg,
   Float,
@@ -11,12 +12,14 @@ import {
   Resolver,
   Root,
   Subscription,
+  UseMiddleware,
 } from "type-graphql";
 import { getConnection } from "typeorm";
 
 @Resolver()
 export class TaskListResolver {
   @Mutation(() => TaskList)
+  @UseMiddleware(isAuth)
   async createTaskList(
     @Arg("name") name: string,
     @Arg("boardId", () => Int) boardId: number,
@@ -60,6 +63,7 @@ export class TaskListResolver {
   }
 
   @Mutation(() => Boolean)
+  @UseMiddleware(isAuth)
   async deleteTaskList(
     @Arg("id", () => Int) id: number,
     @Arg("boardId", () => Int) boardId: number,
@@ -76,6 +80,7 @@ export class TaskListResolver {
   }
 
   @Mutation(() => TaskList)
+  @UseMiddleware(isAuth)
   async renameTaskList(
     @Arg("id", () => Int) id: number,
     @Arg("name", () => String) name: string,
@@ -102,6 +107,7 @@ export class TaskListResolver {
   }
 
   @Mutation(() => Boolean)
+  @UseMiddleware(isAuth)
   async moveTaskList(
     @Arg("id", () => Int) id: number,
     @Arg("toPos", () => Float) toPos: number,
@@ -154,6 +160,7 @@ export class TaskListResolver {
   }
 
   @Query(() => [TaskList])
+  @UseMiddleware(isAuth)
   async getTaskLists(
     @Arg("boardId", () => Int) boardId: number
   ): Promise<TaskList[]> {
@@ -176,6 +183,7 @@ export class TaskListResolver {
       return args._boardId === payload.boardId;
     },
   })
+  @UseMiddleware(isAuth)
   onNewTaskList(
     @Arg("boardId", () => Int) _boardId: number,
     @Root() newTaskList: TaskList

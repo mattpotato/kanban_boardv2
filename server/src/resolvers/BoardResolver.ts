@@ -1,5 +1,6 @@
 import { MyContext } from "./../types";
 import { Board } from "../entities/Board";
+import { isAuth } from "../middleware/isAuth";
 import {
   Arg,
   Ctx,
@@ -11,6 +12,7 @@ import {
   Resolver,
   Root,
   Subscription,
+  UseMiddleware,
 } from "type-graphql";
 import { getConnection } from "typeorm";
 
@@ -25,6 +27,7 @@ export class BoardActivity {
 @Resolver()
 export class BoardResolver {
   @Mutation(() => Board)
+  @UseMiddleware(isAuth)
   async createBoard(
     @Ctx() { req }: MyContext,
     @Arg("boardName", () => String) boardName: string
@@ -36,6 +39,7 @@ export class BoardResolver {
   }
 
   @Mutation(() => Board)
+  @UseMiddleware(isAuth)
   async changeBoardName(
     @Ctx() { req }: MyContext,
     @Arg("id", () => Int) id: number,
@@ -57,6 +61,7 @@ export class BoardResolver {
   }
 
   @Query(() => Board)
+  @UseMiddleware(isAuth)
   async getBoardById(
     @Arg("boardId", () => Int) boardId: number,
     @Ctx() { req }: MyContext
@@ -79,6 +84,7 @@ export class BoardResolver {
   }
 
   @Query(() => [Board])
+  @UseMiddleware(isAuth)
   async getBoards(@Ctx() { req }: MyContext): Promise<Board[] | undefined> {
     return Board.find({
       where: {
@@ -93,6 +99,7 @@ export class BoardResolver {
       return args.boardId === payload.boardId;
     },
   })
+  @UseMiddleware(isAuth)
   onNewActivity(
     @Arg("boardId", () => Int) _boardId: number,
     @Root() activity: BoardActivity

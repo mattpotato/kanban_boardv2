@@ -307,6 +307,7 @@ const Board: React.FC<RouteComponentProps<BoardRouteInfo>> = (props) => {
 
   useEffect(() => {
     if (activityData?.onNewActivity) {
+      console.log("new activity data");
       client.cache.evict({ fieldName: "getBoardById" });
     }
   }, [activityData, client]);

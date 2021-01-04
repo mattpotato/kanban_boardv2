@@ -21,7 +21,7 @@ const main = async () => {
   const conn = await createConnection({
     type: "postgres",
     url: process.env.DATABASE_URL,
-    synchronize: true,
+    synchronize: !__prod__,
     logging: true,
     migrations: [path.join(__dirname, "./migrations/*")],
     entities: [path.join(__dirname, "./entities/*")],
@@ -51,7 +51,7 @@ const main = async () => {
         httpOnly: true,
         sameSite: "lax", // csrf
         secure: __prod__, // cookies only work in https
-        domain: __prod__ ? ".matthewop.com" : undefined,
+        domain: __prod__ ? process.env.WEB_DOMAIN : undefined,
       },
       saveUninitialized: false,
       secret: process.env.SESSION_SECRET,
@@ -79,7 +79,7 @@ const main = async () => {
   apolloServer.applyMiddleware({
     app,
     cors: {
-      origin: "http://localhost:3000",
+      origin: process.env.CORS_ORIGIN,
       credentials: true,
     },
   });

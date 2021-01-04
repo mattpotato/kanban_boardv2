@@ -11,12 +11,16 @@ import React from "react";
 
 function Provider({ children }: { children: React.ReactNode }) {
   const httpLink = new HttpLink({
-    uri: "http://localhost:4000/graphql",
+    uri: process.env.REACT_APP_API_LINK
+      ? process.env.REACT_APP_API_LINK
+      : "http://localhost:4000/graphql",
     credentials: "include",
   });
 
   const wsLink = new WebSocketLink({
-    uri: `ws://localhost:4000/graphql`,
+    uri: process.env.REACT_APP_API_WSLINK
+      ? process.env.REACT_APP_API_WSLINK
+      : "ws://localhost:4000/graphql",
     options: {
       reconnect: true,
     },

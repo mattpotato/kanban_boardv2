@@ -1,4 +1,4 @@
-import { Button, Heading, HStack } from "@chakra-ui/react";
+import { Box, Button, Heading, HStack } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import { BsPlus } from "react-icons/bs";
 import { BoardList } from "../components/BoardList";
@@ -19,7 +19,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <Layout>
-      <HStack marginLeft="20px" spacing={4}>
+      <HStack margin="20px" spacing={4}>
         <Heading as="h2" size="xl">
           Boards
         </Heading>
@@ -41,7 +41,11 @@ const Dashboard: React.FC = () => {
           New Board
         </Button>
       </HStack>
-      {data?.getBoards && <BoardList boards={data?.getBoards as Board[]} />}
+      {data?.getBoards && (
+        <Box margin="20px">
+          <BoardList boards={data?.getBoards as Board[]} />
+        </Box>
+      )}
     </Layout>
   );
 };

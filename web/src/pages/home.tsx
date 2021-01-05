@@ -1,13 +1,9 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Button, Heading, Link as ChakraLink, Stack } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import LandingLayout from "../components/LandingLayout";
 
 const Home = () => {
-  useEffect(() => {
-    document.title = "Kanban";
-  }, []);
-
   return (
     <LandingLayout>
       <Stack alignItems="center" spacing="40px">

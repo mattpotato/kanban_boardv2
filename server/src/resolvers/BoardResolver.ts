@@ -99,7 +99,7 @@ export class BoardResolver {
       return args.boardId === payload.boardId;
     },
   })
-  @UseMiddleware(isAuth)
+  // @UseMiddleware(isAuth)
   onNewActivity(
     @Arg("boardId", () => Int) _boardId: number,
     @Root() activity: BoardActivity

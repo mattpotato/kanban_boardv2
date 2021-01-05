@@ -13,7 +13,11 @@ const Home = () => {
         <Heading as="h2" size="2xl">
           Organize your projects and tasks
         </Heading>
-        <ChakraLink as={Link} to="/register">
+        <ChakraLink
+          as={Link}
+          to="/register"
+          _hover={{ textDecoration: "none" }}
+        >
           <Button variant="solid" colorScheme="green">
             Get Started
           </Button>

@@ -13,10 +13,14 @@ const LandingLayout: React.FC = ({ children }) => {
 
         <Flex alignSelf="flex-end">
           <ColorModeSwitcher />
-          <ChakraLink as={Link} to="/login" textDecoration="none">
+          <ChakraLink as={Link} to="/login" _hover={{ textDecoration: "none" }}>
             <Button variant="ghost">Login</Button>
           </ChakraLink>
-          <ChakraLink as={Link} to="/register" textDecoration="none">
+          <ChakraLink
+            as={Link}
+            to="/register"
+            _hover={{ textDecoration: "none" }}
+          >
             <Button variant="solid" colorScheme="green">
               Create account
             </Button>

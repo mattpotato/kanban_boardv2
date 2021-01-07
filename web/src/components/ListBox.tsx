@@ -141,7 +141,7 @@ const ListBox: React.FC<ListBoxProps> = React.memo(({ col, data }) => {
               </div>
             )}
           </Droppable>
-          <Box marginLeft="20px">
+          <Box marginLeft="30px">
             <AddTaskButton listId={data.id} boardId={data.boardId} />
           </Box>
         </div>

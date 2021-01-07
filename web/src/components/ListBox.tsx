@@ -17,6 +17,7 @@ import {
 import React, { useState } from "react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import {
+  Task,
   TaskList,
   useDeleteTaskListMutation,
   useRenameTaskListMutation,
@@ -29,6 +30,19 @@ interface ListBoxProps {
   col: number;
 }
 
+interface InnerListProps {
+  tasks: Task[];
+  boardId: number;
+}
+
+const InnerList: React.FC<InnerListProps> = React.memo(({ tasks, boardId }) => (
+  <>
+    {tasks.map((task, index) => (
+      <TaskBox key={task.id} data={task} index={index} boardId={boardId} />
+    ))}
+  </>
+));
+
 const ListBox: React.FC<ListBoxProps> = React.memo(({ col, data }) => {
   const [deleteList] = useDeleteTaskListMutation();
   const [renameList] = useRenameTaskListMutation();
@@ -38,8 +52,12 @@ const ListBox: React.FC<ListBoxProps> = React.memo(({ col, data }) => {
     <Draggable draggableId={"l" + data.id} index={col}>
       {(provided) => (
         <div ref={provided.innerRef} {...provided.draggableProps}>
-          <Flex justifyContent="space-between" {...provided.dragHandleProps}>
-            <Box marginTop="10px" marginLeft="25px">
+          <Flex
+            justifyContent="space-between"
+            marginBottom="10px"
+            {...provided.dragHandleProps}
+          >
+            <Box marginTop="10px" marginLeft="50px">
               <HStack>
                 <Editable
                   defaultValue={name}
@@ -81,6 +99,7 @@ const ListBox: React.FC<ListBoxProps> = React.memo(({ col, data }) => {
                 variant="ghost"
                 aria-label="Options"
                 fontSize="20px"
+                marginRight="20px"
                 icon={<BsThreeDots />}
               >
                 Actions
@@ -106,22 +125,24 @@ const ListBox: React.FC<ListBoxProps> = React.memo(({ col, data }) => {
           </Flex>
           <Droppable droppableId={"" + col}>
             {(provided) => (
-              <div ref={provided.innerRef} {...provided.droppableProps}>
-                <Stack width="300px" margin="10px">
-                  {data.tasks.map((task, index) => (
-                    <TaskBox
-                      key={task.id}
-                      data={task}
-                      index={index}
-                      boardId={data.boardId}
-                    />
-                  ))}
+              <div
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+                style={{
+                  height: "70%",
+                  overflowY: "auto",
+                  overflowX: "hidden",
+                }}
+              >
+                <Stack width="300px" marginX="30px">
+                  <InnerList tasks={data.tasks} boardId={data.boardId} />
                   {provided.placeholder}
                   <AddTaskButton listId={data.id} boardId={data.boardId} />
                 </Stack>
               </div>
             )}
           </Droppable>
+          <Box marginLeft="20px"></Box>
         </div>
       )}
     </Draggable>

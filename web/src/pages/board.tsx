@@ -344,7 +344,12 @@ const Board: React.FC<RouteComponentProps<BoardRouteInfo>> = (props) => {
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="board" direction="horizontal" type="COLUMN">
           {(provided) => (
-            <Flex height="100%" overflowX="auto" ref={provided.innerRef}>
+            <Flex
+              height="100%"
+              overflowX="auto"
+              overflowY="hidden"
+              ref={provided.innerRef}
+            >
               {(lists as []).map((list: TaskList, index) => (
                 <ListBox key={list.id} col={index} data={list} />
               ))}

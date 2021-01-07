@@ -129,7 +129,7 @@ const ListBox: React.FC<ListBoxProps> = React.memo(({ col, data }) => {
                 ref={provided.innerRef}
                 {...provided.droppableProps}
                 style={{
-                  height: "70%",
+                  maxHeight: "70%",
                   overflowY: "auto",
                   overflowX: "hidden",
                 }}
@@ -137,12 +137,13 @@ const ListBox: React.FC<ListBoxProps> = React.memo(({ col, data }) => {
                 <Stack width="300px" marginX="30px">
                   <InnerList tasks={data.tasks} boardId={data.boardId} />
                   {provided.placeholder}
-                  <AddTaskButton listId={data.id} boardId={data.boardId} />
                 </Stack>
               </div>
             )}
           </Droppable>
-          <Box marginLeft="20px"></Box>
+          <Box marginLeft="20px">
+            <AddTaskButton listId={data.id} boardId={data.boardId} />
+          </Box>
         </div>
       )}
     </Draggable>

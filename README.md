@@ -1,8 +1,6 @@
 # Kanban Board 
 Organize your projects and tasks. Made with React, TypeScript, Node, PostgreSQL stack.
 
-## Demo
-
 ## Prerequisites
 * Node
 * yarn or npm
@@ -17,7 +15,7 @@ $ yarn
 $ yarn start
 # In the /web directory
 $ yarn
-$ yarn start
+$ yarn start # will launch in localhost:3000 by default
 ```
 
 ## Packages used

@@ -21,6 +21,7 @@ $ yarn start # will launch in localhost:3000 by default
 ## Packages used
 * React
 * Chakra UI
+* react-beautiful-dnd
 * Apollo Client
 * TypeORM
 * TypeGraphQL

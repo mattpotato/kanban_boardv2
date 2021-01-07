@@ -25,11 +25,51 @@ interface TaskBoxProps {
   index: number;
 }
 
+const MenuActions: React.FC<{
+  onDelete: Function;
+}> = React.memo(({ onDelete }) => (
+  <Menu placement="bottom-end" isLazy>
+    <MenuButton
+      as={IconButton}
+      icon={<BsThreeDots />}
+      aria-label="options"
+      position="absolute"
+      visibility="hidden"
+      opacity="0"
+      top="2px"
+      right="0px"
+      _groupHover={{
+        visibility: "visible",
+        opacity: "1",
+        transition: "all 0.2s ease-in-out",
+      }}
+    >
+      Actions
+    </MenuButton>
+    <MenuList>
+      <MenuItem onClick={() => onDelete()}>Delete</MenuItem>
+    </MenuList>
+  </Menu>
+));
+
 const TaskBox: React.FC<TaskBoxProps> = React.memo(
   ({ data, index, boardId }) => {
     const [deleteTask] = useDeleteTaskMutation();
     const [renameTask] = useRenameTaskMutation();
     const [name, setName] = useState(data.name);
+
+    const onDelete = () => {
+      deleteTask({
+        variables: {
+          id: data.id,
+          boardId,
+          listId: data.listId,
+        },
+        update: (cache) => {
+          cache.evict({ fieldName: "getBoardById" });
+        },
+      });
+    };
     return (
       <Draggable draggableId={"t" + data.id} index={index}>
         {(provided) => (
@@ -78,44 +118,7 @@ const TaskBox: React.FC<TaskBoxProps> = React.memo(
                   </>
                 )}
               </Editable>
-              <Menu placement="bottom-end">
-                <MenuButton
-                  as={IconButton}
-                  icon={<BsThreeDots />}
-                  aria-label="options"
-                  position="absolute"
-                  visibility="hidden"
-                  opacity="0"
-                  top="2px"
-                  right="0px"
-                  _groupHover={{
-                    visibility: "visible",
-                    opacity: "1",
-                    transition: "all 0.2s ease-in-out",
-                  }}
-                >
-                  Actions
-                </MenuButton>
-                <MenuList>
-                  <MenuItem
-                    onClick={() => {
-                      console.log("delete task");
-                      deleteTask({
-                        variables: {
-                          id: data.id,
-                          boardId,
-                          listId: data.listId,
-                        },
-                        update: (cache) => {
-                          cache.evict({ fieldName: "getBoardById" });
-                        },
-                      });
-                    }}
-                  >
-                    Delete
-                  </MenuItem>
-                </MenuList>
-              </Menu>
+              <MenuActions onDelete={onDelete} />
             </Box>
           </div>
         )}

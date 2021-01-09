@@ -1,8 +1,10 @@
 import {
+  Button,
   Editable,
   EditableInput,
   EditablePreview,
   Flex,
+  Tooltip,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { RouteComponentProps, useHistory } from "react-router-dom";
@@ -19,6 +21,7 @@ import {
   useOnNewActivitySubscription,
 } from "../generated/graphql";
 import { useApolloClient } from "@apollo/client";
+import { BsPlus } from "react-icons/bs";
 
 interface BoardRouteInfo {
   boardId: string;
@@ -59,9 +62,9 @@ const Board: React.FC<RouteComponentProps<BoardRouteInfo>> = (props) => {
       boardId: parseInt(props.match.params.boardId),
     },
     onError: (error) => {
-      if (error) {
-        history.push("/dashboard");
-      }
+      // if (error) {
+      //   history.push("/dashboard");
+      // }
     },
   });
 
@@ -321,25 +324,40 @@ const Board: React.FC<RouteComponentProps<BoardRouteInfo>> = (props) => {
   return (
     <Layout>
       {data?.getBoardById ? (
-        <Editable
-          width="300px"
-          margin="20px"
-          fontSize="4xl"
-          defaultValue={data.getBoardById.name}
-          onSubmit={(nextValue) => {
-            if (nextValue) {
-              changeBoardName({
-                variables: {
-                  id: data.getBoardById.id,
-                  name: nextValue,
-                },
-              });
-            }
-          }}
-        >
-          <EditablePreview cursor="pointer" />
-          <EditableInput placeholder="Enter Board Name" />
-        </Editable>
+        <Flex>
+          <Editable
+            margin="20px"
+            fontSize="4xl"
+            defaultValue={data.getBoardById.name}
+            onSubmit={(nextValue) => {
+              if (nextValue) {
+                changeBoardName({
+                  variables: {
+                    id: data.getBoardById.id,
+                    name: nextValue,
+                  },
+                });
+              }
+            }}
+          >
+            <EditablePreview cursor="pointer" />
+            <EditableInput placeholder="Enter Board Name" />
+          </Editable>
+          <Tooltip
+            label="Feature coming soon!"
+            fontSize="md"
+            closeOnClick={false}
+          >
+            <Button
+              marginLeft="10px"
+              marginTop="30px"
+              leftIcon={<BsPlus />}
+              colorScheme="green"
+            >
+              Invite Members
+            </Button>
+          </Tooltip>
+        </Flex>
       ) : null}
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="board" direction="horizontal" type="COLUMN">

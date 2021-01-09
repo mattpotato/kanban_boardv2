@@ -38,8 +38,11 @@ const Dashboard: React.FC = () => {
               variables: {
                 boardName: "Untitled Board",
               },
-              update: (cache) => {
+              update: (cache, { data: result }) => {
                 cache.evict({ fieldName: "getBoards" });
+                if (result?.createBoard) {
+                  history.push(`/board/${result.createBoard.id}`);
+                }
               },
             })
           }

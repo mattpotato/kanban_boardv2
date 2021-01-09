@@ -1,5 +1,5 @@
 import { Box, Button, Heading, HStack, Text } from "@chakra-ui/react";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { BsPlus } from "react-icons/bs";
 import { useHistory } from "react-router-dom";
 import { BoardList } from "../components/BoardList";
@@ -12,6 +12,7 @@ import {
 
 const Dashboard: React.FC = () => {
   const { data } = useGetBoardsQuery();
+  const [isLoading, setIsLoading] = useState(false);
   const history = useHistory();
   const [createBoard] = useCreateBoardMutation({
     onError: (_error) => {
@@ -33,19 +34,22 @@ const Dashboard: React.FC = () => {
           leftIcon={<BsPlus />}
           variant="solid"
           colorScheme="green"
-          onClick={() =>
+          isLoading={isLoading}
+          isLoadingText="Creating Board..."
+          onClick={() => {
+            setIsLoading(true);
             createBoard({
               variables: {
                 boardName: "Untitled Board",
               },
-              update: (cache, { data: result }) => {
+              update: (cache, { data: result, errors }) => {
                 cache.evict({ fieldName: "getBoards" });
                 if (result?.createBoard) {
                   history.push(`/board/${result.createBoard.id}`);
                 }
               },
-            })
-          }
+            });
+          }}
         >
           New Board
         </Button>

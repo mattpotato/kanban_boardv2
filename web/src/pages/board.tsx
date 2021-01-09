@@ -62,9 +62,9 @@ const Board: React.FC<RouteComponentProps<BoardRouteInfo>> = (props) => {
       boardId: parseInt(props.match.params.boardId),
     },
     onError: (error) => {
-      // if (error) {
-      //   history.push("/dashboard");
-      // }
+      if (error) {
+        history.push("/dashboard");
+      }
     },
   });
 

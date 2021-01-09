@@ -129,6 +129,7 @@ const ListBox: React.FC<ListBoxProps> = React.memo(({ col, data }) => {
                 ref={provided.innerRef}
                 {...provided.droppableProps}
                 style={{
+                  minHeight: "30px",
                   maxHeight: "70%",
                   overflowY: "auto",
                   overflowX: "hidden",

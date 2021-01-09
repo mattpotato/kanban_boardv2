@@ -57,7 +57,7 @@ const ListBox: React.FC<ListBoxProps> = React.memo(({ col, data }) => {
             marginBottom="10px"
             {...provided.dragHandleProps}
           >
-            <Box marginTop="10px" marginLeft="50px">
+            <Box marginTop="10px" marginLeft="40px">
               <HStack>
                 <Editable
                   defaultValue={name}
@@ -99,7 +99,7 @@ const ListBox: React.FC<ListBoxProps> = React.memo(({ col, data }) => {
                 variant="ghost"
                 aria-label="Options"
                 fontSize="20px"
-                marginRight="20px"
+                marginRight="30px"
                 icon={<BsThreeDots />}
               >
                 Actions

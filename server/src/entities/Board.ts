@@ -31,9 +31,7 @@ export class Board extends BaseEntity {
   creator: User;
 
   @Field(() => [TaskList])
-  @OneToMany(() => TaskList, (taskList) => taskList.board, {
-    onDelete: "CASCADE",
-  })
+  @OneToMany(() => TaskList, (taskList) => taskList.board)
   taskLists: TaskList[];
 
   @Field()

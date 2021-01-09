@@ -1,9 +1,12 @@
 import {
+  Box,
   Button,
   Editable,
   EditableInput,
   EditablePreview,
   Flex,
+  Skeleton,
+  Text,
   Tooltip,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
@@ -57,7 +60,7 @@ const Board: React.FC<RouteComponentProps<BoardRouteInfo>> = (props) => {
     },
   });
 
-  const { data } = useGetBoardByIdQuery({
+  const { data, loading } = useGetBoardByIdQuery({
     variables: {
       boardId: parseInt(props.match.params.boardId),
     },
@@ -323,8 +326,8 @@ const Board: React.FC<RouteComponentProps<BoardRouteInfo>> = (props) => {
 
   return (
     <Layout>
-      {data?.getBoardById ? (
-        <Flex>
+      <Flex>
+        {data?.getBoardById ? (
           <Editable
             margin="20px"
             fontSize="4xl"
@@ -348,22 +351,26 @@ const Board: React.FC<RouteComponentProps<BoardRouteInfo>> = (props) => {
               onFocus={(e) => e.target.select()}
             />
           </Editable>
-          <Tooltip
-            label="Feature coming soon!"
-            fontSize="md"
-            closeOnClick={false}
+        ) : (
+          <Skeleton margin="20px" width="300px">
+            <Text fontSize="4xl">Loading...</Text>
+          </Skeleton>
+        )}
+        <Tooltip
+          label="Feature coming soon!"
+          fontSize="md"
+          closeOnClick={false}
+        >
+          <Button
+            marginLeft="10px"
+            marginTop="30px"
+            leftIcon={<BsPlus />}
+            colorScheme="green"
           >
-            <Button
-              marginLeft="10px"
-              marginTop="30px"
-              leftIcon={<BsPlus />}
-              colorScheme="green"
-            >
-              Invite Members
-            </Button>
-          </Tooltip>
-        </Flex>
-      ) : null}
+            Invite Members
+          </Button>
+        </Tooltip>
+      </Flex>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="board" direction="horizontal" type="COLUMN">
           {(provided) => (

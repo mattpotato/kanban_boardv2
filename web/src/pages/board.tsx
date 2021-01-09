@@ -329,6 +329,7 @@ const Board: React.FC<RouteComponentProps<BoardRouteInfo>> = (props) => {
             margin="20px"
             fontSize="4xl"
             defaultValue={data.getBoardById.name}
+            startWithEditView={data.getBoardById.name === "Untitled Board"}
             onSubmit={(nextValue) => {
               if (nextValue) {
                 changeBoardName({
@@ -341,7 +342,11 @@ const Board: React.FC<RouteComponentProps<BoardRouteInfo>> = (props) => {
             }}
           >
             <EditablePreview cursor="pointer" />
-            <EditableInput placeholder="Enter Board Name" />
+            <EditableInput
+              placeholder="Enter Board Name"
+              autoFocus={true}
+              onFocus={(e) => e.target.select()}
+            />
           </Editable>
           <Tooltip
             label="Feature coming soon!"

@@ -81,7 +81,6 @@ const TaskBox: React.FC<TaskBoxProps> = React.memo(
             <Box
               role="group"
               position="relative"
-              width="300px"
               borderRadius="3px"
               borderColor="rgba(255, 255, 255, 0.1)"
               borderWidth="1px"

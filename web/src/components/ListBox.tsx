@@ -129,13 +129,15 @@ const ListBox: React.FC<ListBoxProps> = React.memo(({ col, data }) => {
                 ref={provided.innerRef}
                 {...provided.droppableProps}
                 style={{
+                  marginLeft: "30px",
+                  marginRight: "30px",
                   minHeight: data.tasks.length > 0 ? "70px" : "30px",
                   maxHeight: "70%",
                   overflowY: "auto",
                   overflowX: "hidden",
                 }}
               >
-                <Stack width="300px" marginX="30px">
+                <Stack width="300px">
                   <InnerList tasks={data.tasks} boardId={data.boardId} />
                   {provided.placeholder}
                 </Stack>

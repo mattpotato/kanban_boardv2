@@ -55,9 +55,11 @@ const ListBox: React.FC<ListBoxProps> = React.memo(({ col, data }) => {
           <Flex
             justifyContent="space-between"
             marginBottom="10px"
+            marginLeft="40px"
+            marginRight="50px"
             {...provided.dragHandleProps}
           >
-            <Box marginTop="10px" marginLeft="40px">
+            <Box marginTop="10px">
               <HStack>
                 <Editable
                   defaultValue={name}
@@ -99,7 +101,6 @@ const ListBox: React.FC<ListBoxProps> = React.memo(({ col, data }) => {
                 variant="ghost"
                 aria-label="Options"
                 fontSize="20px"
-                marginRight="30px"
                 icon={<BsThreeDots />}
               >
                 Actions
@@ -137,7 +138,7 @@ const ListBox: React.FC<ListBoxProps> = React.memo(({ col, data }) => {
                   overflowX: "hidden",
                 }}
               >
-                <Stack width="300px">
+                <Stack width="300px" marginRight="20px">
                   <InnerList tasks={data.tasks} boardId={data.boardId} />
                   {provided.placeholder}
                 </Stack>

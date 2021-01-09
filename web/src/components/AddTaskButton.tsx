@@ -1,4 +1,4 @@
-import { Flex, FormControl, Button, Stack, Input } from "@chakra-ui/react";
+import { Flex, FormControl, Button, Input } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaPlus } from "react-icons/fa";
@@ -19,7 +19,7 @@ export const AddTaskButton: React.FC<AddTaskButtonProps> = ({
 
   const onSubmit = ({ taskName }: { taskName: string }) => {
     // send data
-    if (taskName.length > 0) {
+    if (taskName?.length > 0) {
       try {
         createTask({
           variables: {
@@ -27,9 +27,54 @@ export const AddTaskButton: React.FC<AddTaskButtonProps> = ({
             listId,
             boardId,
           },
+          // optimisticResponse: {
+          //   __typename: "Mutation",
+          //   createTask: {
+          //     __typename: "Task",
+          //     id: 696969,
+          //     name: taskName,
+          //     listId,
+          //     pos: 6969692,
+          //   },
+          // },
 
-          update: (cache) => {
+          update: (cache, { data }) => {
             cache.evict({ fieldName: "getBoardById" });
+            // let prevTaskList = cache.readFragment({
+            //   id: `TaskList:${listId}`,
+            //   fragment: gql`
+            //     fragment TaskListFragment on TaskList {
+            //       id
+            //       boardId
+            //       createdAt
+            //       maxPos
+            //       minPos
+            //       name
+            //       pos
+            //       tasks {
+            //         id
+            //         name
+            //         pos
+            //       }
+            //       updatedAt
+            //     }
+            //   `,
+            // }) as TaskList;
+            // cache.writeFragment({
+            //   id: `TaskList:${listId}`,
+            //   fragment: gql`
+            //     fragment TaskListFragment2 on TaskList {
+            //       id
+            //       tasks {
+            //         id
+            //         listId
+            //         name
+            //         pos
+            //       }
+            //     }
+            //   `,
+            //   data: [...prevTaskList.tasks, data],
+            // });
           },
         });
       } catch (err) {
@@ -44,22 +89,20 @@ export const AddTaskButton: React.FC<AddTaskButtonProps> = ({
     <Flex as="form" flexDirection="column" onSubmit={handleSubmit(onSubmit)}>
       <FormControl>
         {show ? (
-          <Stack>
-            <Input
-              autoFocus={show}
-              type="text"
-              placeholder="Enter Task Name..."
-              name="taskName"
-              ref={register}
-              onBlur={handleSubmit(onSubmit)}
-              width="300px"
-              minHeight="50px"
-              borderColor="rgb(255, 255, 255)"
-              background="rgba(138, 148, 145, 0.1)"
-              marginLeft="10px"
-              padding="10px"
-            />
-          </Stack>
+          <Input
+            autoFocus={show}
+            type="text"
+            placeholder="Enter Task Name..."
+            name="taskName"
+            ref={register}
+            onBlur={handleSubmit(onSubmit)}
+            width="290px"
+            minHeight="50px"
+            borderColor="rgb(255, 255, 255)"
+            background="rgba(138, 148, 145, 0.1)"
+            marginLeft="10px"
+            marginRight="30px"
+          />
         ) : (
           <Button
             variant="ghost"

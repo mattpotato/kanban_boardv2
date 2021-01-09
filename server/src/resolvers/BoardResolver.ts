@@ -60,6 +60,24 @@ export class BoardResolver {
     return board;
   }
 
+  @Mutation(() => Boolean)
+  @UseMiddleware(isAuth)
+  async deleteBoard(
+    @Arg("id", () => Int) id: number,
+    @Ctx() { req }: MyContext
+  ): Promise<Boolean> {
+    let board = await Board.findOne({
+      where: {
+        id,
+        creatorId: req.session.userId,
+      },
+    });
+    if (board) {
+      await Board.delete(id);
+    }
+    return true;
+  }
+
   @Query(() => Board)
   @UseMiddleware(isAuth)
   async getBoardById(

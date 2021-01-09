@@ -28,7 +28,7 @@ export const App = () => {
             {data?.me ? <Redirect to="/dashboard" /> : <Register />}
           </Route>
           <Route path="/dashboard">
-            {data?.me ? <Redirect to="/login" /> : <Dashboard />}
+            <Dashboard />
           </Route>
           <Route path="/">
             <Home />

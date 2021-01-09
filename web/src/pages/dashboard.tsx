@@ -1,6 +1,7 @@
 import { Box, Button, Heading, HStack, Text } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import { BsPlus } from "react-icons/bs";
+import { useHistory } from "react-router-dom";
 import { BoardList } from "../components/BoardList";
 import Layout from "../components/Layout";
 import {
@@ -11,7 +12,12 @@ import {
 
 const Dashboard: React.FC = () => {
   const { data } = useGetBoardsQuery();
-  const [createBoard] = useCreateBoardMutation();
+  const history = useHistory();
+  const [createBoard] = useCreateBoardMutation({
+    onError: (_error) => {
+      history.push("/login");
+    },
+  });
 
   useEffect(() => {
     document.title = "Dashboard";

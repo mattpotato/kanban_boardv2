@@ -5,6 +5,11 @@ import {
   EditableInput,
   EditablePreview,
   Flex,
+  IconButton,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Skeleton,
   Text,
   Tooltip,
@@ -18,13 +23,14 @@ import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import {
   TaskList,
   useChangeBoardNameMutation,
+  useDeleteBoardMutation,
   useGetBoardByIdQuery,
   useMoveTaskListMutation,
   useMoveTaskMutation,
   useOnNewActivitySubscription,
 } from "../generated/graphql";
 import { useApolloClient } from "@apollo/client";
-import { BsPlus } from "react-icons/bs";
+import { BsPlus, BsThreeDots } from "react-icons/bs";
 
 interface BoardRouteInfo {
   boardId: string;
@@ -59,6 +65,7 @@ const Board: React.FC<RouteComponentProps<BoardRouteInfo>> = (props) => {
       if (networkError) console.log(`[Network error]: ${networkError}`);
     },
   });
+  const [deleteBoard] = useDeleteBoardMutation();
 
   const { data, loading } = useGetBoardByIdQuery({
     variables: {
@@ -370,6 +377,37 @@ const Board: React.FC<RouteComponentProps<BoardRouteInfo>> = (props) => {
             Invite Members
           </Button>
         </Tooltip>
+        <Menu placement="bottom-end">
+          <MenuButton
+            as={IconButton}
+            variant="ghost"
+            aria-label="Options"
+            fontSize="20px"
+            margin="30px"
+            icon={<BsThreeDots />}
+          >
+            Actions
+          </MenuButton>
+          <MenuList>
+            <MenuItem
+              onClick={() => {
+                if (data?.getBoardById) {
+                  deleteBoard({
+                    variables: {
+                      id: data.getBoardById.id,
+                    },
+                    update: (cache) => {
+                      cache.evict({ fieldName: "getBoards" });
+                      history.push("/dashboard");
+                    },
+                  });
+                }
+              }}
+            >
+              Delete Board
+            </MenuItem>
+          </MenuList>
+        </Menu>
       </Flex>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="board" direction="horizontal" type="COLUMN">
